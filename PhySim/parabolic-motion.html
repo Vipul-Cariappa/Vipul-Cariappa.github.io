@@ -27,12 +27,106 @@
     <br>
     <div class="container">
         <p>
-             
+             test 
         </p>
     </div>
     <br>
     <div class="container">
-    <textarea id="source"><div id="glowscript" class="glowscript">
+    <textarea id="source">
+
+from vpython import *
+
+
+scene.title = "Parabolic Motion Near Surface Of Planets"
+scene.autoscale = False
+
+# ball velocity
+ball_velx = 3
+ball_vely = 0
+
+# accleration due to gravity
+gravity = 10
+
+# initialising
+ball = sphere(pos=vec(-16, 0, 0), radius=0.3, color=color.cyan)
+ground = box(pos=vec(0, -6, 0), size=vec(40, 0.2, 10), color=color.green)
+
+ball.velocity = vec(ball_velx, ball_vely, 0)
+ball.accleration = vec(0, -gravity, 0)
+
+# time management
+delta_t = 1/60
+t = 0
+
+# booleans/flags
+gravity_changed = False
+ball_velx_changed = False
+ball_vely_changed = False
+
+# UI callbacks
+def update_accleration(widget):
+    global gravity, gravity_changed
+    gravity = widget.value
+    gravity_changed = True
+    accleration_text.text = '{:1.2f}\n'.format(widget.value)
+
+
+def update_ball_velx(widget):
+    global ball_velx, ball_velx_changed
+    ball_velx = widget.value
+    ball_velx_changed = True
+    velx_text.text = '{:1.2f}\n'.format(widget.value)
+
+
+def update_ball_vely(widget):
+    global ball_vely, ball_vely_changed
+    ball_vely = widget.value
+    ball_vely_changed = True
+    vely_text.text = '{:1.2f}\n'.format(widget.value)
+
+
+# UI elements
+wtext(text="Accleration due to Gravity (lenght/time^2)\n", top=6)
+accleration_slider = slider(min=0, max=50, value=10,
+                            length=600, bind=update_accleration)
+accleration_text = wtext(text='{:1.2f}\n'.format(accleration_slider.value))
+
+wtext(text="Velocity of Ball In x-axis (lenght/time)\n", top=6)
+velx_slider = slider(min=0, max=25, value=5, length=600, bind=update_ball_velx)
+velx_text = wtext(text='{:1.2f}\n'.format(velx_slider.value))
+
+wtext(text="Velocity of Ball In y-axis (lenght/time)\n", top=6)
+vely_slider = slider(min=0, max=25, value=0, length=600, bind=update_ball_vely)
+vely_text = wtext(text='{:1.2f}\n'.format(vely_slider.value))
+
+# animation loop
+while True:
+
+    rate(60)  # 60fps
+
+    # distroy old ball and create new ball if values changed
+    if any((gravity_changed, ball_velx_changed, ball_vely_changed)):
+        ball.visible = False
+        del ball
+        ball = sphere(pos=vec(-16, 0, 0), radius=0.3, color=color.cyan)
+        ball.velocity = vec(ball_velx, ball_vely, 0)
+        ball.accleration = vec(0, -gravity, 0)
+        gravity_changed = ball_velx_changed = ball_vely_changed = False
+
+    # Collision detection
+    if ball.pos.y < ground.pos.y and ball.pos.x < ground.size.x / 2:
+        ball.velocity.y *= -1
+
+    # Updating Position and Velocity
+    ball.pos = ball.pos + ball.velocity*delta_t + 0.5*ball.accleration*delta_t*delta_t
+    ball.velocity = ball.velocity + ball.accleration*delta_t
+
+    t += delta_t
+</textarea>
+    </div>
+    <br>
+    <div class="container">
+        <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"><link type="text/css" href="https://s3.amazonaws.com/glowscript/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
 <link type="text/css" href="https://s3.amazonaws.com/glowscript/css/ide.css" rel="stylesheet" />
 <script type="text/javascript" src="https://s3.amazonaws.com/glowscript/lib/jquery/2.1/jquery.min.js"></script>
@@ -225,10 +319,7 @@ if (!__main__.__module__) Object.defineProperties(__main__, {
 ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
 
 //--><!]]></script>
-</div></textarea>
-    </div>
-    <br>
-    <div class="container">
+</div>
     </div>
     <br>
     <!-- Bootstrap JavaScript -->
