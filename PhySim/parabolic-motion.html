@@ -1,0 +1,250 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CodeMirror -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.61.1/theme/solarized.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/python/python.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <title>parabolic motion</title>
+
+</head>
+<body>
+    <nav class="navbar navbar-light" style="background-color: azure;">
+        <div class="container">
+          <a class="navbar-brand" href="#">
+            parabolic motion
+          </a>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        <p>
+            something more
+        </p>
+    </div>
+    <br>
+    <div class="container">
+    <textarea id="source"><div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><link type="text/css" href="https://s3.amazonaws.com/glowscript/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<link type="text/css" href="https://s3.amazonaws.com/glowscript/css/ide.css" rel="stylesheet" />
+<script type="text/javascript" src="https://s3.amazonaws.com/glowscript/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://s3.amazonaws.com/glowscript/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://s3.amazonaws.com/glowscript/package/glow.3.1.min.js"></script>
+<script type="text/javascript" src="https://s3.amazonaws.com/glowscript/package/RSrun.3.1.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+;(function() {;
+var ρσ_modules = {};
+var gravity, gravity_changed, ball_velx, ball_velx_changed, ball_vely, ball_vely_changed;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+
+    var version, display, vector, print, arange, __name__, type, scene, ρσ_ls, ball_velx, ball_vely, gravity, ball, ground, delta_t, t, gravity_changed, ball_velx_changed, ball_vely_changed, accleration_slider, accleration_text, velx_slider, velx_text, vely_slider, vely_text;
+    version = ρσ_list_decorate([ "3.1", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    display = canvas;
+    vector = vec;
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    scene = canvas();
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    scene.title = "Parabolic Motion Near Surface Of Planets";
+    "8";
+    scene.autoscale = false;
+    "11";
+    ball_velx = 3;
+    "12";
+    ball_vely = 0;
+    "15";
+    gravity = 10;
+    "18";
+    ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(16["-u"](), 0, 0), radius: .3, color: color.cyan})]);
+    "19";
+    ground = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 6["-u"](), 0), size: vec(40, .2, 10), color: color.green})]);
+    "21";
+    ball.velocity = vec(ball_velx, ball_vely, 0);
+    "22";
+    ball.accleration = vec(0, gravity["-u"](), 0);
+    "25";
+    delta_t = 1["/"](60);
+    "26";
+    t = 0;
+    "29";
+    gravity_changed = false;
+    "30";
+    ball_velx_changed = false;
+    "31";
+    ball_vely_changed = false;
+    "34";
+    async function update_accleration(widget) {
+        "36";
+        "38";
+        gravity = widget.value;
+        "40";
+        gravity_changed = true;
+        "42";
+        accleration_text.text = "{:1.2f}\n".format(widget.value);
+    };
+    if (!update_accleration.__argnames__) Object.defineProperties(update_accleration, {
+        __argnames__ : {value: ["widget"]},
+        __module__ : {value: null}
+    });
+
+    "45";
+    async function update_ball_velx(widget) {
+        "47";
+        "49";
+        ball_velx = widget.value;
+        "51";
+        ball_velx_changed = true;
+        "53";
+        velx_text.text = "{:1.2f}\n".format(widget.value);
+    };
+    if (!update_ball_velx.__argnames__) Object.defineProperties(update_ball_velx, {
+        __argnames__ : {value: ["widget"]},
+        __module__ : {value: null}
+    });
+
+    "56";
+    async function update_ball_vely(widget) {
+        "58";
+        "60";
+        ball_vely = widget.value;
+        "62";
+        ball_vely_changed = true;
+        "64";
+        vely_text.text = "{:1.2f}\n".format(widget.value);
+    };
+    if (!update_ball_vely.__argnames__) Object.defineProperties(update_ball_vely, {
+        __argnames__ : {value: ["widget"]},
+        __module__ : {value: null}
+    });
+
+    "69";
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Accleration due to Gravity (lenght/time^2)\n", top: 6})]);
+    "70";
+    accleration_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 50, value: 10, length: 600, bind: update_accleration})]);
+    "71";
+    accleration_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(accleration_slider.value)})]);
+    "73";
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In x-axis (lenght/time)\n", top: 6})]);
+    "74";
+    velx_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 5, length: 600, bind: update_ball_velx})]);
+    "75";
+    velx_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(velx_slider.value)})]);
+    "77";
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In y-axis (lenght/time)\n", top: 6})]);
+    "78";
+    vely_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 0, length: 600, bind: update_ball_vely})]);
+    "79";
+    vely_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(vely_slider.value)})]);
+    "82";
+    while (true) {
+        "85";
+        (await rate(60));
+        "90";
+        if ((await any([gravity_changed, ball_velx_changed, ball_vely_changed]))) {
+            "92";
+            ball.visible = false;
+            "94";
+            ball = undefined;
+            "96";
+            ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(16["-u"](), 0, 0), radius: .3, color: color.cyan})]);
+            "98";
+            ball.velocity = vec(ball_velx, ball_vely, 0);
+            "100";
+            ball.accleration = vec(0, gravity["-u"](), 0);
+            "102";
+            gravity_changed = ball_velx_changed = ball_vely_changed = false;
+            "107";
+        }
+        if (ball.pos.y["<"](ground.pos.y) && ball.pos.x["<"](ground.size.x["/"](2))) {
+            "109";
+            ball.velocity.y=ball.velocity.y["*"](1["-u"]());
+        }
+        "114";
+        ball.pos = ball.pos["+"](ball.velocity["*"](delta_t))["+"](.5["*"](ball.accleration)["*"](delta_t)["*"](delta_t));
+        "116";
+        ball.velocity = ball.velocity["+"](ball.accleration["*"](delta_t));
+        "119";
+        t=t["+"](delta_t);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+
+//--><!]]></script>
+</div></textarea>
+    </div>
+    <br>
+    <div class="container">
+    </div>
+    <br>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <!-- CodeMirror JS -->
+    <script type="text/javascript">
+    var editor = new CodeMirror.fromTextArea(document.getElementById('source'), {
+        value: document.getElementById('source').value,
+        lineNumbers: true,
+        mode: "python",
+        theme: "solarized light",
+        lineWrapping: true,
+        readOnly: true,
+    });
+    </script>
+
+</body>
+</html>
