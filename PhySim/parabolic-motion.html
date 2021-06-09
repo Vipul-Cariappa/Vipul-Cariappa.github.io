@@ -138,14 +138,14 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "45";
+    "46";
     async function update_ball_velx(widget) {
-        "47";
-        "49";
+        "48";
+        "50";
         ball_velx = widget.value;
-        "51";
+        "52";
         ball_velx_changed = true;
-        "53";
+        "54";
         velx_text.text = "{:1.2f}\n".format(widget.value);
     };
     if (!update_ball_velx.__argnames__) Object.defineProperties(update_ball_velx, {
@@ -153,14 +153,14 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "56";
+    "58";
     async function update_ball_vely(widget) {
-        "58";
         "60";
-        ball_vely = widget.value;
         "62";
-        ball_vely_changed = true;
+        ball_vely = widget.value;
         "64";
+        ball_vely_changed = true;
+        "66";
         vely_text.text = "{:1.2f}\n".format(widget.value);
     };
     if (!update_ball_vely.__argnames__) Object.defineProperties(update_ball_vely, {
@@ -168,53 +168,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "69";
-    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Accleration due to Gravity (lenght/time^2)\n", top: 6})]);
-    "70";
-    accleration_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 50, value: 10, length: 600, bind: update_accleration})]);
     "71";
-    accleration_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(accleration_slider.value)})]);
-    "73";
-    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In x-axis (lenght/time)\n", top: 6})]);
-    "74";
-    velx_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 5, length: 600, bind: update_ball_velx})]);
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Accleration due to Gravity (lenght/time^2)\n", top: 6})]);
+    "72";
+    accleration_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 50, value: 10, length: 600, bind: update_accleration})]);
     "75";
-    velx_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(velx_slider.value)})]);
+    accleration_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(accleration_slider.value)})]);
     "77";
-    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In y-axis (lenght/time)\n", top: 6})]);
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In x-axis (lenght/time)\n", top: 6})]);
     "78";
-    vely_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 0, length: 600, bind: update_ball_vely})]);
+    velx_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 5, length: 600, bind: update_ball_velx})]);
     "79";
-    vely_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(vely_slider.value)})]);
+    velx_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(velx_slider.value)})]);
+    "81";
+    ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Velocity of Ball In y-axis (lenght/time)\n", top: 6})]);
     "82";
+    vely_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 25, value: 0, length: 600, bind: update_ball_vely})]);
+    "83";
+    vely_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}\n".format(vely_slider.value)})]);
+    "86";
     while (true) {
-        "85";
+        "89";
         (await rate(60));
-        "90";
+        "94";
         if ((await any([gravity_changed, ball_velx_changed, ball_vely_changed]))) {
-            "92";
-            ball.visible = false;
-            "94";
-            ball = undefined;
             "96";
-            ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(16["-u"](), 0, 0), radius: .3, color: color.cyan})]);
+            ball.visible = false;
             "98";
-            ball.velocity = vec(ball_velx, ball_vely, 0);
+            ball = undefined;
             "100";
-            ball.accleration = vec(0, gravity["-u"](), 0);
+            ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(16["-u"](), 0, 0), radius: .3, color: color.cyan})]);
             "102";
+            ball.velocity = vec(ball_velx, ball_vely, 0);
+            "104";
+            ball.accleration = vec(0, gravity["-u"](), 0);
+            "106";
             gravity_changed = ball_velx_changed = ball_vely_changed = false;
-            "107";
+            "111";
         }
         if (ball.pos.y["<"](ground.pos.y) && ball.pos.x["<"](ground.size.x["/"](2))) {
-            "109";
+            "113";
             ball.velocity.y=ball.velocity.y["*"](1["-u"]());
         }
-        "114";
+        "118";
         ball.pos = ball.pos["+"](ball.velocity["*"](delta_t))["+"](.5["*"](ball.accleration)["*"](delta_t)["*"](delta_t));
-        "116";
+        "120";
         ball.velocity = ball.velocity["+"](ball.accleration["*"](delta_t));
-        "119";
+        "123";
         t=t["+"](delta_t);
     }
 };
