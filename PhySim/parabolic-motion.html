@@ -27,7 +27,16 @@
     <br>
     <div class="container">
         <p>
-            test
+            Projectile Motion of objects near surface of planet.
+A projectile is any object thrown into space upon which the only acting force is gravity.
+The path followed by a projectile is known as a trajectory.
+
+Formulae 
+v = u + at
+s = ut + 0.5 at<sup>2</sup>
+v<sup>2</sup> - u<sup>2</sup> = 2as
+where u and v is initial and final velocity respectively, s is distance travelled, t is time and a is acceleration  due to gravity.
+
         </p>
     </div>
     <br>
@@ -44,7 +53,7 @@ scene.autoscale = False
 ball_velx = 3
 ball_vely = 0
 
-# accleration due to gravity
+# acceleration due to gravity
 gravity = 10
 
 # initialising
@@ -52,7 +61,7 @@ ball = sphere(pos=vec(-16, 0, 0), radius=0.3, color=color.cyan)
 ground = box(pos=vec(0, -6, 0), size=vec(40, 0.2, 10), color=color.green)
 
 ball.velocity = vec(ball_velx, ball_vely, 0)
-ball.accleration = vec(0, -gravity, 0)
+ball.acceleration = vec(0, -gravity, 0)
 
 # time management
 delta_t = 1/60
@@ -64,11 +73,11 @@ ball_velx_changed = False
 ball_vely_changed = False
 
 # UI callbacks
-def update_accleration(widget):
+def update_acceleration(widget):
     global gravity, gravity_changed
     gravity = widget.value
     gravity_changed = True
-    accleration_text.text = '{:1.2f}\n'.format(widget.value)
+    acceleration_text.text = '{:1.2f}\n'.format(widget.value)
 
 
 def update_ball_velx(widget):
@@ -86,10 +95,10 @@ def update_ball_vely(widget):
 
 
 # UI elements
-wtext(text="Accleration due to Gravity (lenght/time^2)\n", top=6)
-accleration_slider = slider(min=0, max=50, value=10,
-                            length=600, bind=update_accleration)
-accleration_text = wtext(text='{:1.2f}\n'.format(accleration_slider.value))
+wtext(text="acceleration due to Gravity (lenght/time^2)\n", top=6)
+acceleration_slider = slider(min=0, max=50, value=10,
+                            length=600, bind=update_acceleration)
+acceleration_text = wtext(text='{:1.2f}\n'.format(acceleration_slider.value))
 
 wtext(text="Velocity of Ball In x-axis (lenght/time)\n", top=6)
 velx_slider = slider(min=0, max=25, value=5, length=600, bind=update_ball_velx)
@@ -110,7 +119,7 @@ while True:
         del ball
         ball = sphere(pos=vec(-16, 0, 0), radius=0.3, color=color.cyan)
         ball.velocity = vec(ball_velx, ball_vely, 0)
-        ball.accleration = vec(0, -gravity, 0)
+        ball.acceleration = vec(0, -gravity, 0)
         gravity_changed = ball_velx_changed = ball_vely_changed = False
 
     # Collision detection
@@ -118,8 +127,8 @@ while True:
         ball.velocity.y *= -1
 
     # Updating Position and Velocity
-    ball.pos = ball.pos + ball.velocity*delta_t + 0.5*ball.accleration*delta_t*delta_t
-    ball.velocity = ball.velocity + ball.accleration*delta_t
+    ball.pos = ball.pos + ball.velocity*delta_t + 0.5*ball.acceleration*delta_t*delta_t
+    ball.velocity = ball.velocity + ball.acceleration*delta_t
 
     t += delta_t
 </textarea>
@@ -139,7 +148,7 @@ var gravity, gravity_changed, ball_velx, ball_velx_changed, ball_vely, ball_vely
 async function __main__() {
 "use strict";
 
-    var version, display, vector, print, arange, __name__, type, scene, RS_ls, ball_velx, ball_vely, gravity, ball, ground, delta_t, t, gravity_changed, ball_velx_changed, ball_vely_changed, accleration_slider, accleration_text, velx_slider, velx_text, vely_slider, vely_text;
+    var version, display, vector, print, arange, __name__, type, scene, RS_ls, ball_velx, ball_vely, gravity, ball, ground, delta_t, t, gravity_changed, ball_velx_changed, ball_vely_changed, acceleration_slider, acceleration_text, velx_slider, velx_text, vely_slider, vely_text;
     version = RS_list_decorate([ "3.0", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -168,7 +177,7 @@ async function __main__() {
     "21";
     ball.velocity = vec(ball_velx, ball_vely, 0);
     "22";
-    ball.accleration = vec(0, gravity["-u"](), 0);
+    ball.acceleration = vec(0, gravity["-u"](), 0);
     "25";
     delta_t = 1["/"](60);
     "26";
@@ -180,16 +189,16 @@ async function __main__() {
     "31";
     ball_vely_changed = false;
     "34";
-    async function update_accleration(widget) {
+    async function update_acceleration(widget) {
         "36";
         "38";
         gravity = widget.value;
         "40";
         gravity_changed = true;
         "42";
-        accleration_text.text = "{:1.2f}\n".format(widget.value);
+        acceleration_text.text = "{:1.2f}\n".format(widget.value);
     };
-    if (!update_accleration.__argnames__) Object.defineProperties(update_accleration, {
+    if (!update_acceleration.__argnames__) Object.defineProperties(update_acceleration, {
         __argnames__ : {value: ["widget"]},
         __module__ : {value: "__main__"}
     });
@@ -225,11 +234,11 @@ async function __main__() {
     });
 
     "71";
-    RS_interpolate_kwargs.call(this, wtext, [RS_desugar_kwargs({text: "Accleration due to Gravity (lenght/time^2)\n", top: 6})]);
+    RS_interpolate_kwargs.call(this, wtext, [RS_desugar_kwargs({text: "acceleration due to Gravity (lenght/time^2)\n", top: 6})]);
     "72";
-    accleration_slider = RS_interpolate_kwargs.call(this, slider, [RS_desugar_kwargs({min: 0, max: 50, value: 10, length: 600, bind: update_accleration})]);
+    acceleration_slider = RS_interpolate_kwargs.call(this, slider, [RS_desugar_kwargs({min: 0, max: 50, value: 10, length: 600, bind: update_acceleration})]);
     "75";
-    accleration_text = RS_interpolate_kwargs.call(this, wtext, [RS_desugar_kwargs({text: "{:1.2f}\n".format(accleration_slider.value)})]);
+    acceleration_text = RS_interpolate_kwargs.call(this, wtext, [RS_desugar_kwargs({text: "{:1.2f}\n".format(acceleration_slider.value)})]);
     "77";
     RS_interpolate_kwargs.call(this, wtext, [RS_desugar_kwargs({text: "Velocity of Ball In x-axis (lenght/time)\n", top: 6})]);
     "78";
@@ -257,7 +266,7 @@ async function __main__() {
             "102";
             ball.velocity = vec(ball_velx, ball_vely, 0);
             "104";
-            ball.accleration = vec(0, gravity["-u"](), 0);
+            ball.acceleration = vec(0, gravity["-u"](), 0);
             "106";
             gravity_changed = ball_velx_changed = ball_vely_changed = false;
             "111";
@@ -267,9 +276,9 @@ async function __main__() {
             ball.velocity.y=ball.velocity.y["*"](1["-u"]());
         }
         "118";
-        ball.pos = ball.pos["+"](ball.velocity["*"](delta_t))["+"](.5["*"](ball.accleration)["*"](delta_t)["*"](delta_t));
+        ball.pos = ball.pos["+"](ball.velocity["*"](delta_t))["+"](.5["*"](ball.acceleration)["*"](delta_t)["*"](delta_t));
         "120";
-        ball.velocity = ball.velocity["+"](ball.accleration["*"](delta_t));
+        ball.velocity = ball.velocity["+"](ball.acceleration["*"](delta_t));
         "123";
         t=t["+"](delta_t);
     }
