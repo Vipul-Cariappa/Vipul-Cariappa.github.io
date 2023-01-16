@@ -1,44 +1,131 @@
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Personal Site" />
+    <meta name="author" content="Vipul Cariappa" />
+
     <title>Vipul Cariappa</title>
-</head>
-<body>
-    <nav class="navbar navbar-light" style="background-color: azure;">
-        <div class="container">
-          <a class="navbar-brand" href="#">
-            Vipul Cariappa
-          </a>
+
+    <!-- Bootstrap -->
+    <link
+      href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Fonts -->
+    <link
+      rel="stylesheet"
+      href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700"
+    />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+
+  <body class="home">
+    <header id="header">
+      <div id="head" class="parallax" parallax-speed="2">
+        <h1 id="logo" class="text-center">
+          <img
+            class="img-circle"
+            src="assets/images/vipul-cartoon.jpeg"
+            alt=""
+          />
+          <span class="title">Vipul Cariappa</span>
+          <span class="tagline">Enthusiastic Programmer</span>
+        </h1>
+      </div>
+
+      <nav class="navbar navbar-default navbar-sticky">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button
+              type="button"
+              class="navbar-toggle"
+              data-toggle="collapse"
+              data-target="#myNavbar"
+            >
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+
+          <div class="navbar-collapse collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="projects.html">Projects</a></li>
+              <li><a href="https://medium.com/@vipulcariappa">Blog</a></li>
+            </ul>
+          </div>
         </div>
-    </nav>
-    <br>
-    <div class="container" >
-        <h3 id="hi-there">Hi there 👋</h3>
-        <!--
-        **Vipul-Cariappa/Vipul-Cariappa** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+      </nav>
+    </header>
 
-        Here are some ideas to get you started:
+    <main id="main">
+      <div class="container">
+        <div class="row section topspace">
+          <div class="col-md-12">
+            <p class="lead text-center">
+              I am a student at Ramaiah University of Applied Sciences,
+              Bangalore, pursuing my B.Tech in Computer Science and Engineering.
+              I love to program and write code. Presently my programming
+              interests are programming languages, their design and
+              implementations. My interests keep changing as I am still
+              exploring the vastness of computer science. Computational
+              mathematics is something which has caught my eyes recently. I am
+              very much fond of open source technologies and love to contribute.
+              I am trying to learn, explore and spread my findings to others.
+              <br />My hobbies and other interests include mathematics,
+              swimming, eating and playing lots of video games.
+            </p>
+          </div>
+        </div>
+        <!-- <div class="row section featured topspace"></div> -->
+        <!-- <div class="row section recentworks topspace"></div> -->
+      </div>
+    </main>
 
-        - 🔭 I’m currently working on ...
-        - 🌱 I’m currently learning ...
-        - 👯 I’m looking to collaborate on ...
-        - 🤔 I’m looking for help with ...
-        - 💬 Ask me about ...
-        - 📫 How to reach me: ...
-        - 😄 Pronouns: ...
-        - ⚡ Fun fact: ...
-        -->
-        <p><img src="https://raw.githubusercontent.com/Vipul-Cariappa/Vipul-Cariappa/main/me.svg" alt="Info" height="420px"></p>
-        <p><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Vipul-Cariappa&amp;langs_count=10&amp;theme=tokyonight&amp;layout=compact" alt="Most Used Languages"></p>
-        <p><img src="https://github-readme-stats.vercel.app/api?username=Vipul-Cariappa" alt="Vipul Cariappa&#39;s GitHub stats"></p>
-    </div>
-    <br>
-    <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-</body>
+    <footer class="navbar navbar-fixed-bottom" id="underfooter">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 widget">
+            <div class="widget-body">
+              <p class="follow-me-icons">
+                <a href="https://github.com/Vipul-Cariappa"
+                  ><i class="fa-brands fa-github"></i
+                ></a>
+                <a href="https://medium.com/@vipulcariappa"
+                  ><i class="fa-brands fa-medium"></i
+                ></a>
+                <a
+                  href="https://stackoverflow.com/users/14512079/vipul-cariappa"
+                  ><i class="fa-brands fa-stack-overflow"></i
+                ></a>
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6 widget">
+            <div class="widget-body">
+              <p class="text-right">
+                Vipul Cariappa<br />
+                Design By:
+                <a href="http://pozhilov.com" rel="designer">Sergey Pozhilov</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
 </html>
