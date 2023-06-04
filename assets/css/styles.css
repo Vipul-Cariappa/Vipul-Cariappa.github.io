@@ -170,6 +170,7 @@ body {
 p {
   line-height: 1.6em;
   margin: 0 0 30px 0;
+  font-size: 18px;
 }
 
 ul,
@@ -179,9 +180,7 @@ ol {
 }
 
 blockquote {
-  padding: 10px 20px;
-  margin: 0 0 30px;
-  border-left: 5px solid #eee;
+  border-left: 5px solid #eee; 
 }
 
 h1,
