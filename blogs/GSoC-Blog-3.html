@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="This is an account of all the tasks that I am finished with
+    from the start of GSoC, or am working on at the moment."
+    />
+    <meta name="author" content="Vipul Cariappa" />
+
+    <title>GSoC First 5 Weeks Blog | Vipul Cariappa</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <!-- Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700"
+    />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+
+  <body>
+    <div class="min-vh-100 d-flex flex-column justify-content-between">
+      <header id="header">
+        <div id="head" class="parallax" parallax-speed="1">
+          <h1 id="logo" class="text-center">
+            <span class="title">Vipul Cariappa</span>
+            <span class="tagline">Enthusiastic Programmer</span>
+          </h1>
+        </div>
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" aria-current="page" href="/index.html"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/projects.html">Projects</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/blogs.html">Blog</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main id="main">
+        <div class="container">
+          <div class="col-sm-12 col-sm-offset-2">
+            <article class="post">
+              <header class="entry-header">
+                <div class="entry-meta">
+                  <span class="posted-on"
+                    ><time class="entry-date published" date="2023-07-09"
+                      >July 09, 2023</time
+                    ></span
+                  >
+                </div>
+                <h1 class="entry-title">
+                  <a href="#" rel="bookmark">GSoC First 5 Weeks Blog</a>
+                </h1>
+              </header>
+              <div class="entry-content">
+                <p>
+                  This is an account of all the tasks that I am finished with
+                  from the start of GSoC, or am working on at the moment.
+                </p>
+                <h2 id="complete-tasks">Completed Tasks</h2>
+                <ul>
+                  <li>
+                    Moved the repository which was previously hosted by a single
+                    person to hosting it under the GNU Octave project at GitLab.
+                    Work on this front was mainly done by my mentor <a href="https://gitlab.com/cbm755">Colin</a>. Link
+                    to the repository at GitLab:
+                    <a href="https://gitlab.com/gnu-octave/octave-pythonic"
+                      >GNU Octave / Octave Pythonic</a
+                    >.
+                  </li>
+                  <li>
+                    Supporting the latest versions of Python in Pythonic.
+                    <br />Pythonic previously only supported Python version 3.9
+                    and below. Now Pythonic supports the latest version of
+                    Python which is Python 3.11. Link to Merged MR at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/75"
+                      >Support python 3.10 &amp; 3.11 and drops support for less
+                      then 3.7</a
+                    >.
+                  </li>
+                  <li>
+                    Using Python Stable ABI in Pythonic to support multiple
+                    versions of Python.
+                    <br />Pythonic now uses
+                    <a href="https://docs.python.org/3/c-api/stable.html#stable"
+                      >Python Stable ABI</a
+                    >. Python Stable ABI is a limited subset of the Python C API
+                    which Python Organisation grantees to be backward and
+                    forward compatible with old and new versions of Python. Link
+                    to Merged MR at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/83"
+                      >Updating Pythonic to use Python Stable ABI.</a
+                    >.
+                  </li>
+                  <li>
+                    Updating the CI/CD pipeline at GitLab to test Pythonic
+                    against multiple versions of Python and Octave. <br />In
+                    this update, we also migrated to use the <a href="https://hub.docker.com/r/gnuoctave/octave">official Docker
+                    image for Octave</a> provided by GNU Octave. Now our automated
+                    CI/CD testing, tests Pythonic with the latest version of
+                    Octave which is version 8.2 with all the supported Python
+                    versions i.e. from Python version 3.7 to 3.11. It also tests
+                    Octave 7.1 with Python 3.9 and Octave 6.1 with Python 3.10.
+                    Link to Merged MR at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/79"
+                      >Updating gitlab CI/CD to use official gnu octave docker
+                      image</a
+                    >. The CI/CD pipeline updates I am talking about at this
+                    point are restricted to testing on Linux. For testing on
+                    other platforms read the sections below.
+                  </li>
+                  <li>
+                    Provide proof of concept of <code>pyimport</code>.
+                    <br /><code>pyimport</code>
+                    is a command to import Python functions, classes,
+                    namespaces, or any other symbols into the Octave workspace.
+                    The concept is appreciated, but may not be merged into the
+                    main branch as it is a workaround to the fact that function
+                    handles are not yet supported on Pythonic. Link to Merge
+                    Request at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/81"
+                      >Add support to import modules using pyimport command</a
+                    >.
+                  </li>
+                  <li>
+                    Updated the Pythonic wiki with a list of functions and class
+                    methods Pythonic offers. Link to the wiki:
+                    <a href="https://wiki.octave.org/Pythonic/fullAPI"
+                      >Pythonic/fullAPI</a
+                    >.
+                  </li>
+                </ul>
+                <h2 id="on-going-work">On Going Work</h2>
+                <ul>
+                  <li>
+                    Implementation of destructor for <code>pyobject</code>s.
+                    <br />Destructor was previously not supported on Pythonic.
+                    Variables which were no longer used were still kept in
+                    memory and were not freed/released from memory. This was due
+                    to a bug in the core Octave interpreter (<a
+                      href="https://savannah.gnu.org/bugs/?46497"
+                      >bug #46497, classdef: delete destructor method…</a
+                    >). This bug is now fixed. Link to Merge Request at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/80"
+                      >Support for destructor of pyobject</a
+                    >.
+                  </li>
+                  <li>
+                    Implementation of <code>pyenv</code> function. <br /><code
+                      >pyenv</code
+                    >
+                    is a MATLAB compatibility function. <code>pyenv</code> lets
+                    the user select the version of Python to be used. At the
+                    time of writing this article, the
+                    <code>pyenv</code> functionality is working properly on
+                    Linux systems, but using it on Windows crashes Octave. To
+                    me, it looks like an issue with how Octave is packaged on
+                    Windows. Because depending on how Octave is launched the
+                    functionality works or does not work. Any progress on this
+                    will be appended to this article later. Link to Merge
+                    Request at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/82"
+                      ><code>pyenv</code> function to select python version</a
+                    >.
+                  </li>
+                  <li>
+                    Testing on Windows (and MacOS) <br />I am primarily focusing
+                    on Windows. My mentor is currently looking at MacOS. Octave
+                    does not offer a Windows Docker image to test on Windows.
+                    Compiling any octave package which contains C/C++ code
+                    required some Linux specific tools to be installed (at least
+                    in the case of Pythonic), which is usually bundled with
+                    Octave on Windows. But compiling Pythonic on GitLab's CI/CD
+                    pipeline has been a work with no success till now. Link to
+                    Merge Request on Gitlab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/86"
+                      >CI: Build / Test on Windows</a
+                    >.
+                  </li>
+                </ul>
+                <h2 id="issues-discussions-i-opened">
+                  Issues / Discussions I Opened
+                </h2>
+                <ul>
+                  <li>
+                    A test fails on Windows (when trying it out on my local
+                    machine). This is mostly due to an integer overflow. Link to
+                    the Issue at GitLab:
+                    <a
+                      href="https://gitlab.com/gnu-octave/octave-pythonic/-/issues/110"
+                      >A test fails on Windows</a
+                    >.
+                  </li>
+                  <li>
+                    Errors/Issues I encounter when working on Windows. Links to
+                    Discussion at Discourse:
+                    <a
+                      href="https://octave.discourse.group/t/how-to-compile-octave-in-windows/4624"
+                      >How to compile Octave in Windows?</a
+                    >
+                    and
+                    <a
+                      href="https://octave.discourse.group/t/mkoctfile-does-not-work-on-windows/4546"
+                      >Mkoctfile does not work on windows</a
+                    >.
+                  </li>
+                </ul>
+                <h2 id="miscellaneous">Miscellaneous</h2>
+                <blockquote>
+                  <p>
+                    Issues or discussions I opened or any other contributions to
+                    the GNU Octave which do not directly concern my GSoC
+                    project.
+                  </p>
+                </blockquote>
+                <ul>
+                  <li>
+                    Opened topic on Discourse on a bug., which shows the wrong
+                    link of packages. Link to the Discussion at Discourse:
+                    <a
+                      href="https://octave.discourse.group/t/wrong-link-shown-in-the-community-topics-related-to-release-of-a-package/4663"
+                      >Wrong link shown in the Community topics related to the
+                      release of a package</a
+                    >.
+                  </li>
+                  <li>
+                    Bug report filed:
+                    <a
+                      href="https://octave.discourse.group/t/panic-impossible-state-reached-while-using-subsasgn-with-struct-and-multiple-subs-value/4494"
+                      >“panic: impossible state reached” while using subsasgn
+                      with struct and multiple subs value</a
+                    >
+                    and
+                    <a
+                      href="https://octave.discourse.group/t/octave-crashes-while-saving-data-to-file/4503"
+                      >Octave crashes while saving data to file</a
+                    >.
+                  </li>
+                  <li>
+                    Work on supporting HDF5 file format: Ongoing
+                    <a href="https://github.com/pantxo/oct-hdf5/pull/2"
+                      >Implementing h5disp</a
+                    >; Merged
+                    <a href="https://github.com/pantxo/oct-hdf5/pull/3"
+                      >Implemented: test runner script and gihub action to run
+                      tests</a
+                    >
+                    and
+                    <a href="https://github.com/pantxo/oct-hdf5/pull/1"
+                      >Implemented H5A.get_num_attrs</a
+                    >.
+                  </li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+      </main>
+
+      <footer id="underfooter">
+        <div class="container">
+          <div class="row justify-content-between">
+            <div class="col-4">
+              <p class="follow-me-icons">
+                <a href="https://github.com/Vipul-Cariappa"
+                  ><i class="fa-brands fa-github"></i
+                ></a>
+                <a href="https://medium.com/@vipulcariappa"
+                  ><i class="fa-brands fa-medium"></i
+                ></a>
+                <a
+                  href="https://stackoverflow.com/users/14512079/vipul-cariappa"
+                  ><i class="fa-brands fa-stack-overflow"></i
+                ></a>
+              </p>
+            </div>
+
+            <div class="col-4">
+              <p class="test-end">
+                Vipul Cariappa<br />
+                Design By:
+                <a href="https://pozhilov.com" rel="designer"
+                  >Sergey Pozhilov</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
