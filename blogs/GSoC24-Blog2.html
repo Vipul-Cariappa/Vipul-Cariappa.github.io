@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Google Summer of Code 2024 LPython Blog. Work done in the first 2 weeks." />
+  <meta name="author" content="Vipul Cariappa" />
+
+  <title>GSoC'24 Week 1 & 2 | Vipul Cariappa</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+
+<body>
+  <div class="min-vh-100 d-flex flex-column justify-content-between">
+    <header id="header">
+      <div id="head" class="parallax" parallax-speed="1">
+        <h1 id="logo" class="text-center">
+          <span class="title">Vipul Cariappa</span>
+          <span class="tagline">Enthusiastic Programmer</span>
+        </h1>
+      </div>
+
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/projects.html">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/blogs.html">Blog</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <div class="col-sm-12 col-sm-offset-2">
+          <article class="post">
+            <header class="entry-header">
+              <div class="entry-meta">
+                <span class="posted-on"><time class="entry-date published" date="2024-06-07">Jun 07, 2024</time></span>
+              </div>
+              <h1 class="entry-title">
+                <a href="#" rel="bookmark">GSoC'24 Week 1 & 2</a>
+              </h1>
+            </header>
+            <div class="entry-content">
+              <p>The last 2 weeks were rough. With the existing implementation of
+                Just-In-Time (JIT) compilation we use for REPL, we were facing issues on
+                Windows.<br> Say you declare a function <code>f</code> in the first REPL
+                block, and function <code>g</code> in the second block. Such that
+                function <code>g</code> calls the function <code>f</code>. And in the
+                3rd block, you call <code>g</code>; JIT would not be able to locate the
+                function <code>f</code>. We were facing this issue only on Windows.<br>
+                Currently, on Windows, we are not able to compile with debug symbols; We
+                use the LLVM provided by the conda package manager, the LLVM version it
+                provides, and the MSVC compiler we use in Windows, together do not allow
+                a debug build. This inability to have a debug build made it very
+                difficult to get to the source of the problem we were facing.<br> With
+                lots of trial and error, I fixed the issue. I referred to LLVM’s
+                documentation on using JIT and adapted our existing implementation
+                accordingly.<br></p>
+              <p>A lot of my work focuses on <code>libasr</code>. As the
+                <code>libasr</code> is shared between LFortran and LPython, many of the
+                changes introduced to <code>libasr</code> need to be tested in both
+                LFortran and LPython.
+              </p>
+              <h3 id="merged-pull-requests">Merged Pull Requests</h3>
+              <ul>
+                <li><a href="https://github.com/lfortran/lfortran/pull/4072">Fix array
+                    symbol duplication in interactive mode</a> (In LFortran) This PR fixed a
+                  bug in which array symbols would be duplicated for each REPL evaluation
+                  loop. I believe this issue persists in LPython and needs to be fixed
+                  there.</li>
+                <li><a href="https://github.com/lfortran/lfortran/pull/4086">Fix ASR
+                    verify pass error while using Interactive</a> (In LFortran) The
+                  structure of the ASR is verified using <code>asr_verify</code> function.
+                  In the interactive mode, we remove the body of the functions executed in
+                  the previous REPL block and only keep its declaration. Due to this,
+                  <code>asr_verify</code> would fail. I had to make changes to
+                  <code>asr_verify</code> so that it works in the interactive mode.
+                </li>
+                <li>I added the ability to print the top-level expressions in REPL. As
+                  of now this printing of top-level expressions only works for primitive
+                  types. I will be adding in the ability to print aggregate datatypes like
+                  <code>list</code>, <code>tuple</code>, <code>dict</code>, etc., in the
+                  upcoming week. I have also written the necessary test cases. Related
+                  pull requests (In LPython):
+                  <ul>
+                    <li><a href="https://github.com/lcompilers/lpython/pull/2713">Initial
+                        test for Interactive</a></li>
+                    <li><a href="https://github.com/lcompilers/lpython/pull/2716">Printing
+                        top-level Expressions</a></li>
+                    <li><a href="https://github.com/lcompilers/lpython/pull/2717">Support to
+                        print <code>u32</code> and <code>u64</code> in REPL</a></li>
+                    <li><a href="https://github.com/lcompilers/lpython/pull/2719">Support to
+                        print <code>i8</code>, <code>u8</code>, <code>i16</code> and
+                        <code>u16</code> in Interactive mode</a></li>
+                    <li><a href="https://github.com/lcompilers/lpython/pull/2724">REPL
+                        <code>str</code> support</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <h3 id="open-pull-requests">Open Pull Requests</h3>
+              <ul>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2706">Fix ASR
+                    verify pass error while using Interactive</a> This PR contains the same
+                  changes as previously mentioned, but for LPython.</li>
+                <li><a href="https://github.com/lfortran/lfortran/pull/4006">Support
+                    logical values when using interactive</a> (In LFortran) Support to print
+                  logical/boolean datatypes in REPL. This change should also be
+                  implemented in LPython.</li>
+              </ul>
+              <h3 id="issues-opened">Issues Opened</h3>
+              <ul>
+                <li><a href="https://github.com/lcompilers/lpython/issues/2725">Blank
+                    line within an indented block of code is wrongly parsed on
+                    Windows</a></li>
+              </ul>
+              <p>For the next week, I plan to continue working on implementing the
+                ability to print top-level expressions for the remaining data types that
+                are not yet implemented. Hopefully, I will not be stuck like the last 2
+                weeks with a difficult to debug problem.</p>
+              <br>
+              <hr />
+              <p>
+                Previous Blog Post: <a href="/blogs/GSoC24-Blog1.html" rel="bookmark">GSoC'24 My Project</a>
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <footer id="underfooter">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <p class="follow-me-icons">
+              <a href="https://github.com/Vipul-Cariappa"><i class="fa-brands fa-github"></i></a>
+              <a href="https://medium.com/@vipulcariappa"><i class="fa-brands fa-medium"></i></a>
+              <a href="https://stackoverflow.com/users/14512079/vipul-cariappa"><i
+                  class="fa-brands fa-stack-overflow"></i></a>
+            </p>
+          </div>
+
+          <div class="col-4">
+            <p class="test-end">
+              Vipul Cariappa<br />
+              Design By:
+              <a href="https://pozhilov.com" rel="designer">Sergey Pozhilov</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
