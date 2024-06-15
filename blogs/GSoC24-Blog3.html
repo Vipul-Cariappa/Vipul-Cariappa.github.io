@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Google Summer of Code 2024 LPython Blog. Work done in the 3rd weeks." />
+  <meta name="author" content="Vipul Cariappa" />
+
+  <title>GSoC'24 Week 3 | Vipul Cariappa</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+
+<body>
+  <div class="min-vh-100 d-flex flex-column justify-content-between">
+    <header id="header">
+      <div id="head" class="parallax" parallax-speed="1">
+        <h1 id="logo" class="text-center">
+          <span class="title">Vipul Cariappa</span>
+          <span class="tagline">Enthusiastic Programmer</span>
+        </h1>
+      </div>
+
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/projects.html">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/blogs.html">Blog</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <div class="col-sm-12 col-sm-offset-2">
+          <article class="post">
+            <header class="entry-header">
+              <div class="entry-meta">
+                <span class="posted-on"><time class="entry-date published" date="2024-06-15">June 15, 2024</time></span>
+              </div>
+              <h1 class="entry-title">
+                <a href="#" rel="bookmark">GSoC'24 Week 3</a>
+              </h1>
+            </header>
+            <div class="entry-content">
+              <p>This week was a slow week. I am stuck with a design decision
+                regarding the implementation of printing top-level expressions when the
+                expression is an aggregate datatype like <code>list</code>,
+                <code>tuple</code>, <code>dict</code>, <code>set</code> or user defined
+                <code>class</code>es.
+              </p>
+              <h3 id="problem-i-am-stuck-at">Problem I am stuck at</h3>
+              <p>I have implemented this printing of top-level expression for
+                primitive datatypes, i.e. <code>i8</code>, <code>u8</code>, …,
+                <code>float</code>, <code>double</code>, <code>bool</code>, and
+                <code>str</code>. Presently the way it works; We collect all the
+                top-level expressions into a <code>global_stmts</code> function using
+                the <code>global_stmts</code> ASR pass. The <code>global_stmts</code>
+                function returns the last evaluated expression. We parse each REPL code
+                block and construct this <code>global_stmts</code> function and call it
+                and get its return value. Then print it externally. We use the same
+                approach in LFortran.
+              </p>
+              <p>I am facing a problem now. I am not able to come up with a good way
+                to implement the printing of top-level expressions for aggregate
+                datatypes, like <code>list</code>, <code>dict</code>, <code>set</code>,
+                <code>tuple</code> and user-defined <code>class</code>es.
+              </p>
+              <p>Let’s consider <code>list</code> for now. The following LPython code
+                <code>x: list[i32]</code> is represent as following in LLVM IR:
+              </p>
+              <pre class="text"><code>%list = type { i32, i32, i32* }
+
+@x = global %list zeroinitializer</code></pre>
+              <p>and if we want to return it from a function our function signature in
+                LLVM IR looks like</p>
+              <pre class="text"><code>declare %list @__main__global_stmts_2__()</code></pre>
+              <p>We presently call the <code>global_stmts</code> function and get its
+                return type through
+                <code>e-&gt;execfn&lt;return_type&gt;(function_name)</code>. For the
+                above mentioned case of <code>list</code> what would our
+                <code>return_type</code> be? What will we cast it into?
+              </p>
+              <p>If we consider the case of <code>tuple</code> it becomes even more
+                complicated. Below is the LLVM IR for different <code>tuple</code>
+                declarations: <br><code>t1: tuple[i32]</code> -&gt;
+                <code>%tuple = type { i32 }</code> <br><code>t2: tuple[i32, i32]</code>
+                -&gt; <code>%tuple.0 = type { i32, i32 }</code>
+                <br><code>t3: tuple[i32, i32, str]</code> -&gt;
+                <code>%tuple.1 = type { i32, i32, i8* }</code>
+              </p>
+              <p>And if we have a user-defined class in the mix it will become
+                increasingly more complex.</p>
+              <p>In case of <code>list[i32]</code> we could do</p>
+              <div class="sourceCode" id="cb3">
+                <pre
+                  class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span><span class="dt">int32_t</span> s<span class="op">;</span> <span class="dt">int32_t</span> c<span class="op">;</span> <span class="dt">int32_t</span><span class="op">*</span> b<span class="op">;}</span> List_i32<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>e<span class="op">-&gt;</span>execfn<span class="op">&lt;</span>List_i32<span class="op">&gt;(</span>run_fn<span class="op">);</span></span></code></pre>
+              </div>
+              <p>But we will not be able to do anything when it comes to a
+                <code>tuple</code>, the <code>TYPE</code> in
+                <code>e-&gt;execfn&lt;TYPE&gt;(run_fn)</code> should be known at compile
+                time (i.e. compile time of the LPython compiler itself).
+              </p>
+              <p>I have posted an <a
+                  href="https://lfortran.zulipchat.com/#narrow/stream/197339-general/topic/LPython.3A.20Interactive.20Shell.20Discussion/near/444244213">message</a>
+                regarding this on Zulip.</p>
+              <hr />
+              <p>As I was stuck with the above problem, I did some research on the
+                other things I will be concentrating on in the future; Redefinition of
+                symbols. I went through LLVM’s documentation on how would we implement
+                the ability to redefine symbols. If each symbol is constructed into an
+                independent <code>LLVMModule</code> and we associate each
+                <code>LLVMModule</code> with a <code>ResourceTracker</code> then we
+                could call the destructor for the <code>ResourceTracker</code> when we
+                want to redefine a symbol, resulting in the deletion of the old
+                definition.
+              </p>
+              <hr />
+              <h3 id="merged-pull-requests">Merged Pull Requests</h3>
+              <ul>
+                <li><a href="https://github.com/lfortran/lfortran/pull/4262">combining
+                    duplicated function into a single templated function</a><br> (In
+                  LFortran) We previously had separate functions for each primitive
+                  datatype that called into LLVM’s JIT compiled function, they were
+                  combined into a template based function. The same changes were also made
+                  in <a href="https://github.com/lcompilers/lpython/pull/2727">LPython</a>.</li>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2729">Improved
+                    CLI experience for REPL</a><br> Ability you use arrow keys to get
+                  history and the ability to make edits in REPL.</li>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2728">support
+                    printing <code>boolean</code> in REPL</a><br> Support to print boolean
+                  datatypes in REPL.</li>
+              </ul>
+              <h3 id="open-pull-requests">Open Pull Requests</h3>
+              <ul>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2734">fix array
+                    symbol duplication in interactive mode</a><br> This PR fixed a bug in
+                  which array symbols would be duplicated for each REPL evaluation
+                  loop.</li>
+              </ul>
+              <hr />
+              <p>I will be taking the next week off, as I am having my college
+                examination. I will start back work from 23th June.</p>
+
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <footer id="underfooter">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <p class="follow-me-icons">
+              <a href="https://github.com/Vipul-Cariappa"><i class="fa-brands fa-github"></i></a>
+              <a href="https://medium.com/@vipulcariappa"><i class="fa-brands fa-medium"></i></a>
+              <a href="https://stackoverflow.com/users/14512079/vipul-cariappa"><i
+                  class="fa-brands fa-stack-overflow"></i></a>
+            </p>
+          </div>
+
+          <div class="col-4">
+            <p class="test-end">
+              Vipul Cariappa<br />
+              Design By:
+              <a href="https://pozhilov.com" rel="designer">Sergey Pozhilov</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
