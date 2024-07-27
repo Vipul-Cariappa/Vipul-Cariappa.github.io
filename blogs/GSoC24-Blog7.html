@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Google Summer of Code 2024 LPython Blog. Work done in the 8th week." />
+  <meta name="author" content="Vipul Cariappa" />
+
+  <title>GSoC'24 Week 8 & 9 | Vipul Cariappa</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+
+<body>
+  <div class="min-vh-100 d-flex flex-column justify-content-between">
+    <header id="header">
+      <div id="head" class="parallax" parallax-speed="1">
+        <h1 id="logo" class="text-center">
+          <span class="title">Vipul Cariappa</span>
+          <span class="tagline">Enthusiastic Programmer</span>
+        </h1>
+      </div>
+
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/projects.html">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/blogs.html">Blog</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <div class="col-sm-12 col-sm-offset-2">
+          <article class="post">
+            <header class="entry-header">
+              <div class="entry-meta">
+                <span class="posted-on"><time class="entry-date published" date="2024-07-27">July 27, 2024</time></span>
+              </div>
+              <h1 class="entry-title">
+                <a href="#" rel="bookmark">GSoC'24: Week 8 &amp; 9</a>
+              </h1>
+            </header>
+            <div class="entry-content">
+              <p>The last two weeks were slow. I was busy with college work and could
+                not give sufficient time for GSoC. Due to this, I could not write the
+                last week's blog. I should be relatively free next week, hope everything
+                goes smoothly.</p>
+              <h3 id="merged-pull-requests">Merged Pull Requests</h3>
+              <ul>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2785">Support to
+                    print dataclasses and tuples in REPL</a><br> Added in support to print
+                  <code>dataclass</code>es and <code>tuple</code> in REPL.
+                </li>
+                <li><a href="https://github.com/lcompilers/lpython/pull/2754">CI tests
+                    for LLVM 10, 14, 15 and 16</a><br> Added in CI tests to check with LLVM
+                  versions 10, 14, 15 &amp; 16. LLVM 14 tests were failing on the GitHub
+                  CI, but I could not replicate it locally. We decided to remove it for
+                  now and open an issue about it. Therefore we currently only test with
+                  10, 15 &amp; 16 along with the default version of 11 that is used.</li>
+              </ul>
+              <h3 id="issues-opened">Issues Opened</h3>
+              <ul>
+                <li><a href="https://github.com/lcompilers/lpython/issues/2793">Segfault
+                    while printing <code>dataclass</code> in REPL</a><br> LPython segfaults
+                  with printing a very specific type of <code>dataclass</code>. On
+                  investigation, it looked like a bug in LLVM, but I am not sure.</li>
+                <li><a href="https://github.com/lcompilers/lpython/issues/2792">GitHub
+                    Workflow Fails with LLVM 14</a><br> Issue related to the failing CI
+                  tests on LLVM 14, that I could not replicate locally.</li>
+              </ul>
+              <p>This week I plan on working on the <code>BindPython</code> ABI for
+                the LLVM backend. The main goal is to add support to call CPython code
+                from LPython for the LLVM backend. Presently, we support calling CPython
+                code while using the C backend.</p>
+
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <footer id="underfooter">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-4">
+            <p class="follow-me-icons">
+              <a href="https://github.com/Vipul-Cariappa"><i class="fa-brands fa-github"></i></a>
+              <a href="https://medium.com/@vipulcariappa"><i class="fa-brands fa-medium"></i></a>
+              <a href="https://stackoverflow.com/users/14512079/vipul-cariappa"><i
+                  class="fa-brands fa-stack-overflow"></i></a>
+            </p>
+          </div>
+
+          <div class="col-4">
+            <p class="test-end">
+              Vipul Cariappa<br />
+              Design By:
+              <a href="https://pozhilov.com" rel="designer">Sergey Pozhilov</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
