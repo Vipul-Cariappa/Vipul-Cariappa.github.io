@@ -1,0 +1,32 @@
+---
+title: "GSoC'24 - LPython: 7th Week"
+author: "Vipul Cariappa"
+date: "2024-07-13"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog6.html
+---
+
+
+This was a fun week again. My mentor Ondrej attended the SciPy conference and also presented [LPython in his talk](https://cfp.scipy.org/2024/talk/7CUT9D/). At the start of the week, he asked me about the status of REPL and Jupyter Notebook support for LPython. We have good, usable, but not feature complete REPL, but we have no Jupyter Notebook support was my reply. Within 2 to 3 days, I added support for Jupyter Notebook by adapting the code from LFortran's repository (LFortran already supports Jupyter Notebooks), and fixed bugs related to the failing CI caused by updating the dependencies versions.
+
+## Merged Pull Request
+- [Jupyter Notebook](https://github.com/lcompilers/lpython/pull/2764)<br>
+Support to use LPython in Jupyter Notebooks, and fix for the CI failures.
+- [Support to print `list`s in REPL](https://github.com/lcompilers/lpython/pull/2752)<br>
+Adds support to print top-level expression of `list` type.
+- [Underscore: `_` variable in REPL](https://github.com/lcompilers/lpython/pull/2755)<br>
+This PR introduces the `_` (underscore) variable in LPython's REPL (like in CPython's REPL). The `_` variable holds the value of the last evaluated expression from the previous REPL block.
+
+
+## Open Pull Request
+- [CI tests for LLVM 10, 14, 15 and 16](https://github.com/lcompilers/lpython/pull/2754)<br>
+The CI fails for LLVM version 14 only, and I am not able to reproduce the bug locally.
+
+## Issue Created
+- [Bug with `bit_length` function](https://github.com/lcompilers/lpython/issues/1836#issuecomment-2213626743)<br>
+I added a comment in an existing [issue](https://github.com/lcompilers/lpython/issues/1836) concerning the `bit_length` function. The comment is specific to interactive mode, where no LLVM IR is generated.
+
+
+This week I will be working on support to print other aggregate datatypes in interactive mode. I will also look into the failing CI of LLVM 14.

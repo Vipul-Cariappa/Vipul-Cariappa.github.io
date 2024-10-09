@@ -1,0 +1,29 @@
+---
+title: "GSoC'24 - LPython: 10th & 11th Week"
+author: "Vipul Cariappa"
+date: "2024-08-18"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog8.html
+---
+
+
+The last two weeks were slow. But implemented very important features. I am currently busy with my college examinations, and could not give much time here.
+
+I have implemneted ASR pass for `BindPython` ABI. `BindPython` ABI allows calling into CPython code from LPython.
+Previously `BindPython` was exclusively implemented on the C backend.
+The advantage of implementing the ASR pass for `BindPython` is that all the backends will support out of the box, provided it already supports `BindC` ABI. Most if not all backends already support `BindC` ABI.
+The pass generates the body of the declared `BindPython` function. The pass takes care of the necessary type conversions from the CPython type to the native type and from the native type to the CPython type. The pass also takes care of loading the CPython module and getting a reference to the function that needs to be called.
+
+Type conversions of primitive types (i.e. `int`, `float`, `bool`, and `str`) have been implemented and merged. I have an open PR for type conversions of aggregate type (i.e. `list`, `tuple`, `dict`, and `set`).
+
+The previous implementation of `BindPython` ABI in the C backend conversions LPython arrays into `numpy` arrays and passing `numpy` arrays to CPython functions. In the coming week, I will be working on conversions of LPython arrays to numpy arrays for the same.
+
+## Merged Pull Request
+- [BindPython ABI](https://github.com/lcompilers/lpython/pull/2796)<br>
+Support to call into CPython from LPython. Primitive types.
+
+## Open Pull Request
+- [BindPython ASR Pass: aggregate type conversions](https://github.com/lcompilers/lpython/pull/2803)<br>
+Type conversions of `list`, `tuple`, `dict`, and `set` between CPython types and LPython types. To support calling CPython functions from LPython.

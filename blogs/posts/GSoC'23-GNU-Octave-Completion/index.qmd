@@ -1,0 +1,123 @@
+---
+title: "GSoC'23 - GNU Octave: Project Completion"
+author: "Vipul Cariappa"
+date: "2023-08-27"
+categories: [GSoC, Code, Internship, "GNU Octave"]
+image: /assets/images/gsoc-octave.png
+aliases:
+    - /blogs/GSoC-2023-Blog-Final.html
+---
+
+
+## Project Overview
+
+My project focused on improving the state of the [octave-pythonic](https://gnu-octave.github.io/packages/pythonic/)
+package of Octave. Octave-Pythonic provides support to use/call Python functions,
+modules and classes from within Octave REPL. Octave-Pythonic aims to be MATLAB compatible.
+
+My goal for the project was to fix bugs, add in many of the missing features,
+support the latest version of Python and fix issues related to using Octave-Pythonic on Windows.
+
+## Overview of the Work Done
+
+> Some of the work mentioned below is not merged into the main branch of the project.
+> I will try and update this blog post when they eventually get merged. Please look at the end for any new updates. 
+
+
+- The Octave-Pythonic repository was initially hosted and maintained by a single person.
+We moved the repository under the [GNU Octave project on GitLab](https://gitlab.com/gnu-octave/octave-pythonic).
+
+- Octave-Pythonic supported Python version up to 3.9. Now it has been updated to support the latest Python version 3.11.
+During this change, we also dropped support to Python 2 and Python versions less than 3.7
+([Link to closed Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/75)).
+
+- The CI/CD pipeline on GitLab was updated to use the official Docker image hosted by GNU Octave for testing.
+We are running our test suit against multiple versions of Python and multiple versions of Octave to ensure proper
+support. We could not implement automated testing on Windows by the end of GSoC.
+There were multiple issues we faced with Windows ([Link to closed Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/79)).
+
+- I have provided a proof of concept for `pyimport` command. `pyimport` lets the user import Python functions, classes,
+modules and namespaces into the Octave REPL.
+The proof of concept was appreciated by was not merged because MATLAB does not offer any similar mechanism
+([Link to the implementation](https://gitlab.com/Vipul-Cariappa/octave-pythonic/-/tree/pyimport?ref_type=heads)).
+
+- I have provided a proof of concept of a wrapper around Octave objects so that they can be used within the Python
+interpreter. The main idea is to use a single object within both the interpreters without any copies.
+I managed to get the basic idea working. But this feature breaks compatibility with MATLAB,
+so the changes are not merged ([Link to the implementation](https://gitlab.com/Vipul-Cariappa/octave-pythonic/-/tree/oct-object?ref_type=heads)).
+
+- Support performing arithmetic and other operations on Python objects
+([Link to open Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/98). Not yet merged).
+
+- Improvement to Windows compatibility.
+
+    - I found the main cause of the failing installation of Octave-Pythonic on Windows.
+    On Windows, Octave bundles its own version of Python.
+    That version is a minimal version that cannot be used to build Python packages.
+    This has now been documented and updated instruction to install Octave-Pythonic on Windows is available
+    ([Link to closed Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/100)).
+
+    - We could not get the automated testing on GitLab pipelines working to test Octave-Pythonic on Windows.
+    At present, we manage to get Octave installed, but for some reason, it looks like it does not do anything
+    ([Link to open Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/86). Not yet merged).
+
+- Python Objects were not freed from memory after its use. This is fixed and implemented
+([Link to open Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/80). Not yet merged).
+
+- Verification of existing issues on the Octave interpreter which needs to be fixed to be used in Pythonic
+(The following are the ones that still require work).
+    
+    - Support to access `dict` items<br>
+    We can access elements from `dict` using `dict_name{"key"}`,
+    but assigning elements using `dict_name{"key"} = value` gives a syntax error.
+
+    - Function handles to Python functions, bound methods, or other callable objects<br>
+    We can not create any handles to Python objects.
+    It may require detection of the usage of `@` within the `pyobject`, which cannot be done as of now.
+    There may also be some other way to implement it.
+
+    - Python objects can’t be loaded or saved using the Octave `load` and `save` commands<br>
+    We are waiting for HDF5 file I/O support in Octave to implement this functionality.
+    Currently, Octave does not support HDF5 file I/O.
+
+    - [Stack trace is not returned on error](https://gitlab.com/gnu-octave/octave-pythonic/-/issues/1)<br>
+    This required the implementation of [MException](https://savannah.gnu.org/bugs/?40828). Which is not implemented.
+
+    - [Iterating through Python object using for loop](https://gitlab.com/gnu-octave/octave-pythonic/-/issues/73)<br>
+    This will again require support from the Octave interpreter to implement some kind of mechanism to iterate over
+    `classdef` object.
+
+- We have implemented `pyenv` function.
+`pyenv` is a MATLAB compatible function used to select a Python version to use when using Octave-Pythonic
+([Link to open Merge Request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/82). Not yet merged).
+
+- We have added in [new page](https://wiki.octave.org/Pythonic/fullAPI) on the Pythonic Wiki page with reference API documentation.
+
+- We created multiple releases. The release [v0.1.3](https://gitlab.com/gnu-octave/octave-pythonic/-/releases/v0.1.3) was done by me.
+
+## Other things I worked on during GSoC
+
+> These include bug reports and other contributions to the GNU Octave project directly or other affiliated projects.
+
+- Contributions to the [oct-hdf5](https://github.com/pantxo/oct-hdf5) repository which tries to provide MATLAB compatible HDF5 file I/O functionally.
+    - [Automated testing on GitHub workflow](https://github.com/pantxo/oct-hdf5/pull/3)
+    - [Implementation of `H5A.get_num_attrs`](https://github.com/pantxo/oct-hdf5/pull/1)
+    - [Draft implementation of `h5disp`](https://github.com/pantxo/oct-hdf5/pull/2)
+- Opened discourse topic related to bugs in Octave
+    - [Octave CLI does not show any error message on Windows](https://octave.discourse.group/t/octave-cli-does-not-show-any-error-message-on-windows/4689/61) (This has been fixed now)
+    - [Octave exit code does not work on Windows](https://octave.discourse.group/t/octave-exit-code-does-not-work-on-windows/4690/11) (This has been fixed now)
+    - [Wrong link shown in the Community topics related to release of a package](https://octave.discourse.group/t/wrong-link-shown-in-the-community-topics-related-to-release-of-a-package/4663/3) (This has been fixed now)
+    - [Octave crashes while saving data to file](https://octave.discourse.group/t/octave-crashes-while-saving-data-to-file/4503/3) (This has been fixed now)
+    - ["panic: impossible state reached" while using subsasgn with struct and multiple subs value](https://octave.discourse.group/t/panic-impossible-state-reached-while-using-subsasgn-with-struct-and-multiple-subs-value/4494/8) (This has been fixed now)
+- Filed issues on GNU Octave’s bug tracker
+    - [Octave crashes while saving class object to file](https://savannah.gnu.org/bugs/index.php?64220) (This has been fixed now)
+- Opened code changes on GNU Octave’s patch tracker
+    - [Fix to the above mentioned bug of the wrong exit code on Windows](https://savannah.gnu.org/patch/index.php?10370) (The patch submitted has been merged)
+
+---
+
+### Links to other Blog posts on GSoC 
+
+- [GSoC Blog: My Project](/blogs/posts/GSoC'23-GNU-Octave-My-Project/)
+- [GSoC Week 1 Blog](/blogs/posts/GSoC'23-GNU-Octave-First-Week/)
+- [GSoC First 5 Weeks Blog](/blogs/posts/GSoC'23-GNU-Octave-First-Five-Weeks/)

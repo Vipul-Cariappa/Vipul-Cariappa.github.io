@@ -1,0 +1,74 @@
+---
+title: "GSoC'24 - LPython: Third Week"
+author: "Vipul Cariappa"
+date: "2024-06-15"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog3.html
+---
+
+
+This week was a slow week. I am stuck with a design decision regarding the implementation of printing top-level expressions when the expression is an aggregate datatype like `list`, `tuple`, `dict`, `set` or user defined `class`es.
+
+## Problem I am stuck at
+
+I have implemented this printing of top-level expression for primitive datatypes, i.e. `i8`, `u8`, ..., `float`, `double`, `bool`, and `str`. Presently the way it works; We collect all the top-level expressions into a `global_stmts` function using the `global_stmts` ASR pass. The `global_stmts` function returns the last evaluated expression. We parse each REPL code block and construct this `global_stmts` function and call it and get its return value. Then print it externally. We use the same approach in LFortran.
+
+I am facing a problem now. I am not able to come up with a good way to implement the printing of top-level expressions for aggregate datatypes, like `list`, `dict`, `set`, `tuple` and user-defined `class`es.
+
+Let's consider `list` for now. The following LPython code `x: list[i32]` is represent as following in LLVM IR:
+```text
+%list = type { i32, i32, i32* }
+
+@x = global %list zeroinitializer
+```
+
+and if we want to return it from a function our function signature in LLVM IR looks like
+```text
+declare %list @__main__global_stmts_2__()
+```
+
+We presently call the `global_stmts` function and get its return type through `e->execfn<return_type>(function_name)`.
+For the above mentioned case of `list` what would our `return_type` be? What will we cast it into?
+
+If we consider the case of `tuple` it becomes even more complicated.
+Below is the LLVM IR for different `tuple` declarations:
+`t1: tuple[i32]` -> `%tuple = type { i32 }`
+`t2: tuple[i32, i32]` -> `%tuple.0 = type { i32, i32 }`
+`t3: tuple[i32, i32, str]` -> `%tuple.1 = type { i32, i32, i8* }`
+
+And if we have a user-defined class in the mix it will become increasingly more complex.
+
+In case of `list[i32]` we could do 
+```c++
+typedef struct {int32_t s; int32_t c; int32_t* b;} List_i32;
+e->execfn<List_i32>(run_fn);
+```
+
+But we will not be able to do anything when it comes to a `tuple`, the `TYPE` in `e->execfn<TYPE>(run_fn)` should be known at compile time (i.e. compile time of the LPython compiler itself).
+
+I have posted an [message](https://lfortran.zulipchat.com/#narrow/stream/197339-general/topic/LPython.3A.20Interactive.20Shell.20Discussion/near/444244213) regarding this on Zulip.
+
+---
+
+As I was stuck with the above problem, I did some research on the other things I will be concentrating on in the future; Redefinition of symbols. I went through LLVM's documentation on how would we implement the ability to redefine symbols. If each symbol is constructed into an independent `LLVMModule` and we associate each `LLVMModule` with a `ResourceTracker` then we could call the destructor for the `ResourceTracker` when we want to redefine a symbol, resulting in the deletion of the old definition.
+
+---
+
+## Merged Pull Requests
+- [combining duplicated function into a single templated function](https://github.com/lfortran/lfortran/pull/4262)<br>
+(In LFortran) We previously had separate functions for each primitive datatype that called into LLVM's JIT compiled function, they were combined into a template based function. The same changes were also made in [LPython](https://github.com/lcompilers/lpython/pull/2727).
+- [Improved CLI experience for REPL](https://github.com/lcompilers/lpython/pull/2729)<br>
+Ability you use arrow keys to get history and the ability to make edits in REPL.
+- [support printing `boolean` in REPL](https://github.com/lcompilers/lpython/pull/2728)<br>
+Support to print boolean datatypes in REPL.
+
+## Open Pull Requests
+- [fix array symbol duplication in interactive mode](https://github.com/lcompilers/lpython/pull/2734)<br>
+This PR fixed a bug in which array symbols would be duplicated for each REPL evaluation loop.
+
+---
+
+I will be taking the next week off, as I am having my college examination. I will start back work from 23th June.
+

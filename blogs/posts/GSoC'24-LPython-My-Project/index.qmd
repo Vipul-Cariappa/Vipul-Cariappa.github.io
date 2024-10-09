@@ -1,0 +1,39 @@
+---
+title: "Google Summer of Code 2024 - My Project"
+author: "Vipul Cariappa"
+date: "2024-05-23"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog1.html
+---
+
+
+# LPython: Interactive Shell and Improved Debuggability
+
+## About my Project
+
+[LPython](https://github.com/lcompilers/lpython/) is a statically typed compiled programming language with syntax inspired by Python programming language. LPython also aims to have first-class support to work with Python and C libraries. LPython has multiple backend targets like C, C++, and LLVM IR that can be compiled to target executables with the appropriate C/C++ compiler or the LLVM compiler toolchain. As LPython is statically typed and ahead-of-time compiled it offers much better performance than cpython. The current state of LPython is not feature-complete nor bug-free. I propose to add an interactive shell for LPython so that the developers can quickly prototype ideas, and improve the debug information generated for the LLVM backend so that users can execute a single line of code at a time and pretty print variables and complex datatypes.
+
+**I also have two additional extended goals**
+
+1. Fix memory leaks that occur in the target executable: When using any complex datatypes like `list`, `tuple`, or `dict`, the data is allocated on the heap. But the heap allocated memory is never freed.
+1. Implement the `BindPython` ABI for the LLVM backend: The `@pythoncall` decorator to call into the CPython code is not implemented in the LLVM backend.
+
+## Work done so far
+
+I had two meetings with my mentors. In the first meeting, we discussed the implementation details of the REPL. The first half of the second meeting was a code review where my mentor went through the open PRs at the time. In the second half of the meeting, we discussed how to print the top-level expressions in REPL.
+
+I have implemented a very basic version of the REPL in this [PR](https://github.com/lcompilers/lpython/pull/2617). And it has been merged. Last few days I have been testing this basic REPL and have been fixing bugs that I have come across. [LFortran](https://github.com/lfortran/lfortran/) is a sister project to LPython.<br>
+LFortan and LPython share the same architecture. They have a front end that parses the source programming language and constructs something called Abstract Semantic Representation (ASR). We have a common backend that consumes this ASR to produce the final target code. Any changes to the backend i.e. at the ASR or target code generation level should be tested in both LFortran and LPython.
+
+### Merged Pull Requests
+
+- [Fixes complex datatype's symbol duplication bug while using interactive](https://github.com/lcompilers/lpython/pull/2707)<br>
+We had a bug in which if we declare a variable of `list`, `dict`, `tuple`, or `set` datatype, it would be (re)declared at each REPL evaluation loop.
+- [Removing `_lfortran_caimag` and `_lfortran_zaimag` functions](https://github.com/lcompilers/lpython/pull/2704)<br>
+These 2 functions were declared but not defined anywhere.
+- [Avoiding name mangling while interactive is true](https://github.com/lcompilers/lpython/pull/2701)<br>
+ of the passes on the ASR collects all the top-level expressions and creates a function out of it. The ABI of this function depends on the return type of the function. The target code generator would mangle the name of the function in a different manner depending on the ABI. This name mangling would make it difficult to find and execute the correct function at the REPL.
+- [Combine `global_init` and `global_stmts` functions into `global_stmts`](https://github.com/lcompilers/lpython/pull/2696)<br>
+We collected all the top-level symbol declarations separately then other statements and expressions. The declarations would be put into the `global_init` function and other statements and expressions into `global_stmts`. The `global_init` would run first and then `global_stmts`. This behavior caused problems where the declarations would be overwritten or modified incorrectly when a declaration depended on some computed value that was put into `global_stmts`. You can find the actual bug [report on GitHub](https://github.com/lcompilers/lpython/issues/2573).

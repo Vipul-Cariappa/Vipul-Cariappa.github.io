@@ -1,0 +1,98 @@
+---
+title: "Google Summer of Code 2023 - My Project"
+author: "Vipul Cariappa"
+date: "2023-05-06"
+categories: [GSoC, Code, Internship, "GNU Octave"]
+image: /assets/images/gsoc-octave.png
+aliases: 
+  - /blogs/GSoC-Blog-1.html
+---
+
+
+# Improve the State of octave-pythonic 
+
+## Abstract
+
+octave-pythonic is an octave package used to incorporate python libraries and features in octave using the cpython
+interpreter.
+Currently, octave-pythonic only supports python versions less than 3.10. But the latest python version is 3.11.
+The package has not been updated for a long time.
+I propose to improve the state of the package.
+Making sure that octave-pythonic support the latest versions of python. Adding the missing features to the project.
+Fixing bugs from the bug tracker at GitLab. Implementing a python wrapper around octave types to use in python,
+adding support for function callbacks and handles, and also adding support to use octave from python.
+
+## Main Deliverables
+
+1. Move the octave-pythonic project which is currently owned by a single person to the GNU Octave group.
+
+1. Support the latest version of Python. Current Pythonic only supports Python versions up to 3.9, but 3.11 is the
+latest version of Python.
+
+1. Update CI/CD to test Pythonic with multiple versions of Octave and Python.
+
+1. Provide a proof of concept of a `pyimport` command.
+To use Python functions, namespaces, and any other symbols in the Octave workspace.
+
+1. Implement complete destructor support of `pyobject`. This is required to free unused memory from a running process.
+
+1. Implement a new `pyenv` function to select the Python environment to be used with Pythonic at runtime.
+
+1. Windows Compatibility; Resolve open issues related to build failing on Windows and other bugs on Windows.
+Also, add CI/CD pipeline to test Pythonic on Windows.
+
+1. Verify existing issues on the dev tip of the Octave interpreter which needs to be fixed to be used in Pythonic. 
+
+1. Provide a proof of concept of a wrapper around Octave objects.
+Passing Octave objects and operating on Octave objects should preferably create 0 copies.
+
+1. Improve Documentation; Add a user manual with sections that might include installation, basic usage, advanced usage,
+and development. Hopefully, build and publish it under GitLab Pages.
+
+1. Support performing arithmetic and bit-wise operations on `pyobject`s.
+
+1. Support slicing of Python sequences.
+
+1. Improve/update automated CI releases and adjust for new [packages.octave.org](https://packages.octave.org) changes. 
+
+
+## Extended Deliverables
+
+> Extended deliverables depend on bug fixes or new features being implemented in the core Octave interpreter.
+> These deliverables will be achieved if the necessary fixes/features have been implemented or get implemented during
+> the course of my GSoC.
+
+1. Support assignment on a Python `dict`. Or any Python `mapping`.
+
+1. Support `load` and `save` to store Python objects on the disk.
+
+1. Improve exception handling and exception message. The Python stack trace is not displaced when an exception occurs.
+
+
+## Important Links and References
+
+- Initial discourse post: [https://octave.discourse.group/t/gsoc-2023-proposal-to-improve-state-of-octave-pythonic/4032/1](https://octave.discourse.group/t/gsoc-2023-proposal-to-improve-state-of-octave-pythonic/4032/1)
+- GSoC project page: [https://summerofcode.withgoogle.com/programs/2023/projects/aeEAbtyR](https://summerofcode.withgoogle.com/programs/2023/projects/aeEAbtyR)
+- Merge Requests
+    - [Support python 3.10 & 3.11 and drops support for less then 3.7](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/75)
+      <br>Status: Merged on 26th May 2023
+    - [Updating gitlab CI/CD to use official gnu octave docker image](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/79)
+      <br>Status: Opened on 26th May 2023
+    - [Support for destructor of pyobject](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/80)
+      <br>Status: Opened on 26th May 2023
+    - [Add support to import modules using pyimport command](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/81)
+      <br>Status: Opened on 26th May 2023
+- Bug Reports
+    - [octave crashing while saving class object to a file](https://octave.discourse.group/t/octave-crashes-while-saving-data-to-file/4503) at discourse
+      <br>Status: Fix at Octave version 8.3.0
+    - [crash while using subsasgn with struct and multiple subs value](https://savannah.gnu.org/bugs/?64213) at savannah.
+    - [destructor is executed even if the constructor fails and throws an error](https://savannah.gnu.org/bugs/?64242) at savannah.
+- Added new page at Pythonic Wiki, [developer's reference API](https://wiki.octave.org/Pythonic/fullAPI)
+- Links to my work on supporting HDF5 file format in octave
+    - Project at [https://github.com/pantxo/oct-hdf5](https://github.com/pantxo/oct-hdf5)
+    - Draft [pull request](https://github.com/pantxo/oct-hdf5/pull/2) on implementation of `h5disp` function 
+    - Merged [pull request](https://github.com/pantxo/oct-hdf5/pull/1) on implemented `H5A.get_num_attrs`
+    - Merged [pull request](https://github.com/pantxo/oct-hdf5/pull/3); setting up GitHub actions for automated testing
+- Links to other blogs
+    - [Blog to what I did in week 1](/blogs/posts/GSoC'23-GNU-Octave-First-Week)
+    - [Blog to what I did in the first 5 weeks](/blogs/posts/GSoC'23-GNU-Octave-First-Five-Weeks/)

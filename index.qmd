@@ -1,0 +1,18 @@
+---
+title: "Vipul Cariappa"
+image: /assets/images/vipul-cartoon.jpeg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/vipul-cariappa03/
+    - icon: github
+      text: Github
+      href: https://github.com/Vipul-Cariappa/
+
+---
+
+I am a student at Ramaiah University of Applied Sciences, Bangalore, pursuing my B.Tech in Computer Science and Engineering. I love to program and write code. Presently my programming interests are programming languages, their design and implementations. My interests keep changing as I am still exploring the vastness of computer science. Computational mathematics is something which has caught my eyes recently. I am very much fond of open source technologies and love to contribute. I am trying to learn, explore and spread my findings to others.
+
+My hobbies and other interests include mathematics, swimming, eating and playing lots of video games. 

@@ -1,0 +1,20 @@
+project:
+  type: website
+
+website:
+  title: "Vipul Cariappa"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: /blogs/
+        text: Blog
+      - href: /projects/
+        text: Projects
+  favicon: /assets/images/favicon.ico
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true

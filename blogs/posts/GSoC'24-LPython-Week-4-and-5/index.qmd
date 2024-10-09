@@ -1,0 +1,64 @@
+---
+title: "GSoC'24 - LPython: 4th & 5th Week"
+author: "Vipul Cariappa"
+date: "2024-06-29"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog4.html
+---
+
+
+I enjoyed the work this week. It was interesting and challenging at the same time.
+
+I mainly worked on 2 things this week; Support to print top-level expressions in REPL of aggregate datatypes like `list`, `tuple`, `dict`, `set` and `class`es, and Support for redefinitions of functions.
+
+**Support to Print Top-Level Expression in REPL of Aggregate Datatypes**
+
+Like I have mentioned in the previous blog, `list[i32]` in LLVM is represented as `%list = type { i32, i32, i32* }`.
+I updated the `global_stmt` function that gets generated to return the `list` so that we can print it externally. Looking at the LLVM representation I assumed we could just typecast the result to `struct {int32_t; int32_t; int32_t*;}`. But using this typecast we were not able to get the correct values. Here the first `int32_t` is size, the second is capacity and the pointer points to heap heap-allocated array. We were only able to get the `size`, the other 2 fields were not filled or filled with garbage value. I suspect that LLVM JIT uses some other calling conventions (i.e. ABI), than what is used in C/C++ when it comes to `struct`s.
+
+The second, approach I came up with, is to return the pointer to the address that stores the `list`, then we use LLVM's API to get the offsets of all the `struct` elements, use the type info we use while generating LLVM IR to print the `list`. This approach presently works. I have not yet tested this method with `list`s, but it works with `tuples` of any mixture of primitive datatypes. Therefore I assume this will work with `list` also.
+
+I now need to finish this implementation and open a pull request. I will be working on it this week.
+
+**Support for Re-Definitions of Function**
+
+While using `interactive` mode each function is compiled to separate `LLVMModule`, and moved into the `JIT` with a `ResourceTracker` associated with it. All of the `LLVMModule`'s `ResourceTracker`s are stored in a hash map, where the keys are the function name. Whenever we find a redefinition of the same function, we remove the `ResourceTracker` associated with the previous definition, so the function is removed from JIT.
+The LLVM's tutorial uses the same approach, I just adapted our codebase to do the same.
+
+This causes a bug; Say some function `g` calls function `f` (Here `f` should be defined before defining `g`). After defining `g` we redefine `f`, then we will get a segfault when calling `g`.<br>
+To fix this; we know that `g` depends on `f`, and `f` is redefined, then redefine all the functions that depend on `f`. So `g` would be calling the new redefined `f` and not the old `f`.
+
+While discussing this in the last meeting, we were checking the behavior of CPython and found out that; Say we set some function pointer or variable `fp` to `f` and then redefine `g`. In CPython`fp` refers to the old function and not the new function, so we cannot deallocate the old definition of `f`. Then to support redefinitions we could mangle function names at redefinitions. But `g` should point to the new definition of `f` (which may be `f1` due to name mangling) and not the old definition of `f`.
+
+Example Code:
+
+```python
+>>> def f():
+...   print("called \"f\"")
+...
+>>> fp = f
+>>> def g():
+...   f()
+...   print("called \"g\"")
+...
+>>> g()
+called "f"
+called "g"
+>>> def f():
+...   print("called new \"f\"")
+...
+>>> g()
+called new "f"
+called "g"
+>>> fp()
+called "f"
+```
+
+Due to the above mentioned behaviors, my mentor Ondrej asked me to hold further development till we could come up with a simpler plan to implement this.
+
+> I had my college examination last week and did not work last week. Due to this, there aren't many pull requests.
+
+## Open Pull Requests
+- [fix array symbol duplication in interactive mode](https://github.com/lcompilers/lpython/pull/2734)

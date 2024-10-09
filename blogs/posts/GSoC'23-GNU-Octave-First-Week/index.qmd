@@ -1,0 +1,148 @@
+---
+title: "GSoC'23 - GNU Octave: Week 1"
+author: "Vipul Cariappa"
+date: "2023-06-04"
+categories: [GSoC, Code, Internship, "GNU Octave"]
+image: /assets/images/gsoc-octave.png
+aliases: 
+  - /blogs/GSOC-Blog-2.html
+---
+
+This is an account of all the things I have done during the community bonding period and the 1st week of the Google
+Summer of Code (GSoC) 2023. You can find more details about my GSoC 2023 project
+[here](https://www.vipulcariappa.xyz/blogs/GSoC-Blog-1.html).
+
+-  Update the CI/CD pipeline with the official GNU Octave image to use while testing.
+Testing with multiple versions of GNU Octave and Python which Pythonic currently supports.
+Link to the [merge request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/79).
+This MR has been merged. 
+
+- Implementation of `pyimport` command to import Python modules, functions and namespace into Octave workspace.
+The concept was appreciated, but there are some shortcomings in actually pushing it to the main branch of the project.
+`pyimport` command is a hack to support function handles, MATLAB does not provide such a command, and maintaining it,
+in the long run, may cause problems.
+I have opened a merge request with my implementation of `pyimport` which may or may not be merged.
+You can find it [here](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/81).
+
+- Implementation of destructor (delete) of `@pyobject`.
+Now Python objects are freed from memory when they go out of scope.
+Link to [merge request](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/80).
+This MR is currently under review and is not yet been merged.
+
+- Added a new page in [Pythonic Wiki](https://wiki.octave.org/Pythonic/fullAPI) with reference API documentation for
+developers and users of Pythonic.
+
+- Started a discourse discussion on a bug
+[octave crashing while saving class object to a file](https://octave.discourse.group/t/octave-crashes-while-saving-data-to-file/4503).
+This bug now has been [fixed](https://savannah.gnu.org/bugs/index.php?64220).
+
+- Filed two bug reports at Savannah on
+[octave crashing while using `subsasgn` with struct and multiple `subs` value](https://savannah.gnu.org/bugs/?64213)
+and
+[destructor being executed even if the constructor fails and throws an error](https://savannah.gnu.org/bugs/?64242).
+
+---
+
+During my first meeting with my mentors, I told them that in the first week,
+I wanted to figure out a few things on how I will be implementing some of my deliverables.,
+and will tinker with Octave and Pythonic project during first week.
+Below you will find what I have done/tinkered with this week.
+
+### Info related to `pyenv` function
+
+[MATLAB offers a function `pyenv`](https://in.mathworks.com/help/matlab/ref/pyenv.html) to select the Python version to
+be used. Currently Pythonic does not offer pyenv function,
+nor has any mechanism to change or select Python version to use.
+While compiling Pythonic we link it directly to a specified Python version. Say we compiled Pythonic with Python 3.10,
+but we want to use Python 3.11. We will need to recompile the entire code base and link it to Python 3.11.
+And this will end up breaking Python 3.10.
+
+I have [asked a question at StackOverFlow](https://stackoverflow.com/questions/76372313/how-to-select-specific-version-of-python-when-embeding-python-in-application)
+for a method to select a Python version to use at runtime.
+I have not gotten an answer as of the time I am writing this blog. But I have managed to figure out a way myself.
+A means to choose a Python version is by not linking the final shared library (i.e. `.oct` file) with any Python version.
+Instead, we can load the desired version of Python using `dlopen`, just before initializing Python.
+Then we will be able to use any specified version of Python.
+*Python also offers [stable ABI](https://docs.python.org/3/c-api/stable.html#stable) (Application Binary Interface),
+using it we can set `Py_LIMITED_API` to the minimum Python version we want to support.*
+
+The general idea will be the following
+
+```c
+if (version == "3.11") {
+    dlopen("python311.so", RTLD_GLOBAL | RTLD_DEEPBIND | RTLD_NOW);
+} else if (version == "3.10") {
+    dlopen("python310.so", RTLD_GLOBAL | RTLD_DEEPBIND | RTLD_NOW);
+} else {
+    // system default
+    dlopen("python39.so", RTLD_GLOBAL | RTLD_DEEPBIND | RTLD_NOW);
+}
+```
+
+In Linux machines only adding a `dlopen` function call should be sufficient for it to work.
+But in Windows, we may manually need to resolve all the functions from `python39.dll` that we are going to use.
+
+Example:
+
+```c
+#include <dlfcn.h>
+#include "Python.h"
+
+dlopen("/path/to/python39.so");
+
+// continuation of program
+Py_Initialize();
+...
+Py_Finalize()
+```
+
+The above code will work in Linux.
+
+But in Windows, we may need to do this
+
+```c
+#include <Windows.h>
+
+void *ptr = LoadLibrary("python39.dll");
+
+// resolving functions
+void (*Py_Initialize)(void) = GetProcAddress(ptr, "Py_Initialize");
+...
+void (*Py_Finalize)(void) = GetProcAddress(ptr, "Py_Finalize");
+
+// continuation of program
+Py_Initialize();
+...
+Py_Finalize();
+```
+
+> Windows does not offer `dlopen`. `LoadLibrarry` from `Windows.h` is used to do the same as `dlopen` in Windows.
+
+I am still tinkering with the compiler and linker trying to figure out a way to not have to resolve all the functions
+from `python39.dll` in Windows. 
+
+
+### Info related to Windows compatibility
+
+Octave in Windows ships with its own gcc to compile `.oct` files. It also has its own Python.
+Octave needs some environment variables set to its own gcc to compile C++ files to `.oct` files.
+When lunching octave CLI, these environment variables are not set correctly,
+but lunching octave GUI sets all the necessary environment variables.,
+and you can compile C++ to `.oct` files without any errors.
+There is one more error one may encounter when compiling Pythonic;
+Not finding the necessary header files while compiling.
+By default, Octave tries to compile Pythonic against the Python which is bundled with Octave.
+But compiling with the Python bundled with Octave fails because it does not find the necessary header files.
+Setting `PYTHON` environment variable to the full path to the system’s Python executable solves this problem.
+Pythonic is compiled properly and can be run easily. 
+
+I compiled Pythonic on my local Windows machine with Python 3.10 and Python 3.11.
+It works as expected. While running tests, it fails one test.
+That is because somewhere a 64-bit number is stored as a 32-bit number.
+It can be fixed by changing `PyLong_AsUnsignedLong` to `PyLong_AsUnsignedLongLong` in [line 215 of `src\oct-py-util.cc`](https://gitlab.com/gnu-octave/octave-pythonic/-/blob/main/src/oct-py-util.cc#L215).
+But checking all the places where PyLong_AsUnsignedLong is used to make sure no new bugs emerge later is recommended.
+
+> With the one mentioned change above. All the tests pass in Octave 8.2 with Python 3.10 and Python 3.11.,
+> and Octave 7.2 with Python 3.10 and 3.11.
+
+> The 64-bit number being stored as 32-bit may be linked to this [issue](https://gitlab.com/gnu-octave/octave-pythonic/-/issues/59).

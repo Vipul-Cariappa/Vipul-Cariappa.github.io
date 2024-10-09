@@ -1,0 +1,26 @@
+---
+title: "GSoC'24 - LPython: 8th & 9th Week"
+author: "Vipul Cariappa"
+date: "2024-07-27"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog7.html
+---
+
+
+The last two weeks were slow. I was busy with college work and could not give sufficient time for GSoC. Due to this, I could not write the last week’s blog. I should be relatively free next week, hope everything goes smoothly.
+
+## Merged Pull Requests
+- [Support to print dataclasses and tuples in REPL](https://github.com/lcompilers/lpython/pull/2785)<br>
+Added in support to print `dataclass`es and `tuple` in REPL.
+- [CI tests for LLVM 10, 14, 15 and 16](https://github.com/lcompilers/lpython/pull/2754)<br>
+Added in CI tests to check with LLVM versions 10, 14, 15 & 16. LLVM 14 tests were failing on the GitHub CI, but I could not replicate it locally. We decided to remove it for now and open an issue about it. Therefore we currently only test with 10, 15 & 16 along with the default version of 11 that is used.
+
+## Issues Opened
+- [Segfault while printing `dataclass` in REPL](https://github.com/lcompilers/lpython/issues/2793)<br>
+LPython segfaults with printing a very specific type of `dataclass`. On investigation, it looked like a bug in LLVM, but I am not sure.
+- [GitHub Workflow Fails with LLVM 14](https://github.com/lcompilers/lpython/issues/2792)<br>
+Issue related to the failing CI tests on LLVM 14, that I could not replicate locally.
+
+This week I plan on working on the `BindPython` ABI for the LLVM backend. The main goal is to add support to call CPython code from LPython for the LLVM backend. Presently, we support calling CPython code while using the C backend.

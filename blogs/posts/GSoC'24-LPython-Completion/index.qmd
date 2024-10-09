@@ -1,0 +1,96 @@
+---
+title: "GSoC'24 - LPython: Project Completion"
+author: "Vipul Cariappa"
+date: "2024-08-25"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog9.html
+---
+
+
+This is the final report of my work done during the Google Summer of Code 2024 period with the Python Software Foundation, LPython sub-organisation.
+
+LPython is a statically typed, compiled variant of Python. It is much faster than CPython (the most common Python interpreter). LPython is able to be fast because of the static types as compared to dynamic types in Python and being a compiled language. Our compiler can also be used to trans-compiler Python code to C, C++ and Fortran code. LFortran is a sister project to LPython. Both use the same back-end for target code generation and other compiler optimisations.
+
+I implemented a REPL (read-evaluate-print-loop) shell for LPython. This required modification of the way we compile. I used LLVM's JIT compiler to just-in-time compile the code. Work on REPL laid the groundwork for implementing a Jupyter Kernel. Jupyter Kernel had already been implemented for LFortran, and I only had to adapt it to work with LPython.
+Following that, I worked on interoperability of LPython with CPython. We intend to provide first class support to use CPython libraries within LPython.
+
+## Detailed Description
+
+### Read Evaluate Print Loop
+I faced a lot of issues initially. Our code base was designed for ahead-of-time compilation. I had to adapt it to work for just-in-time compilation. I was using LLVM 11 for development. But the project intends to support all the LLVM versions from 10. This required additional care for changes in LLVM's API across versions.
+
+**Pull Requests**
+
+- [Interactive shell implementation](https://github.com/lcompilers/lpython/pull/2617)<br>
+	Initial implementation of interactive shell
+- [Fix ASR verify pass error while using Interactive](https://github.com/lcompilers/lpython/pull/2706)<br>
+	ASR verify is used to check if the syntax tree generated is valid. While using the interactive mode, there were cases where the syntax tree generated was valid but the ASR verify pass would throw error saying it is invalid.
+- [Initial test for Interactive](https://github.com/lcompilers/lpython/pull/2713)<br>
+	Adding in the initial tests to check and validate the workings of REPL.
+- Printing top-level expressions that are evaluated on each REPL execution loop
+	- [Printing top-level Expressions](https://github.com/lcompilers/lpython/pull/2716)
+	- [Support to print `u32` and `u64` in REPL](https://github.com/lcompilers/lpython/pull/2717)
+	- [Support to print `i8`, `u8`, `i16` and `u16` in Interactive mode](https://github.com/lcompilers/lpython/pull/2719)
+	- [REPL `str` support](https://github.com/lcompilers/lpython/pull/2724)
+	- [support printing `boolean` in REPL](https://github.com/lcompilers/lpython/pull/2728)
+	- [Support to print dataclasses and tuples in REPL](https://github.com/lcompilers/lpython/pull/2785)
+- [CI tests for LLVM 10, 14, 15 and 16](https://github.com/lcompilers/lpython/pull/2754)<br>
+	I added in automated GitHub workflows to compile and test LPython against multiple versions of LLVM that we intend to support.
+- [Underscore: `_` variable in REPL](https://github.com/lcompilers/lpython/pull/2755)<br>
+	The underscore variable `_` is used to retrieve and use the value of the previously evaluated expression in REPL. LPython is statically typed, but the type of evaluated expression can change in each loop. Therefore, the `_` is name mangled to be something else in each REPL execution loop.
+
+There are a few missing features. Error messages that are produced in REPL are fuzzy. Top level printing of a few aggregate datatypes are not yet implemented.
+
+### Jupyter Kernel
+
+A single pull request with more than 1000 lines of code changes. [Jupyter Kernel](https://github.com/lcompilers/lpython/pull/2764)
+We are using [`xeus`](https://xeus.readthedocs.io/en/latest/) library to build LPython's Jupyter Kernel. `xeus` is a C++ library used to create Jupyter Kernels.
+
+### Interoperability with CPython
+
+LPython previously used to support using CPython libraries only when using the C back-end (i.e. trans-compiling LPython code to C source code). I have written an ASR pass, that work on the syntax tree to produce or generate the additional logic for type conversions between CPython and LPython types, and function resolution to find and call CPython functions from LPython. As this implementation works on the syntax tree directly, all the back-ends can use it out of the box without any additional changes specific to each back-end.
+
+**Pull Requests**
+
+- [BindPython ABI](https://github.com/lcompilers/lpython/pull/2796)<br>
+	Implemented function resolution and type conversions for primitive datatypes.
+- [BindPython ASR Pass: aggregate type conversions](https://github.com/lcompilers/lpython/pull/2803)<br>
+	Implemented type conversions for aggregate type such as `list`, `tuple`, `set`, and `dict`.
+
+There is a small bug in this implementation. There is no error handling. This is required when type conversions are not possible or function resolution fails. Presently, it is undefined behaviour. I will be fixing this within a week.
+
+### Pull Requests related to Bug Fixes
+
+- [Prevent calling `abort` while handling the `SIGABRT` signal](https://github.com/lcompilers/lpython/pull/2626)
+- [Combine `global_init` and `global_stmts` functions into `global_stmts`](https://github.com/lcompilers/lpython/pull/2696)
+	This fixed a bug in which variables would be initialised wrongly if it depended on other variable.
+- [avoiding name mangling while interactive is true](https://github.com/lcompilers/lpython/pull/2701)<br>
+	This was required to get the function symbols while using the REPL shell.
+- [removing _lfortran_caimag and _lfortran_zaimag functions](https://github.com/lcompilers/lpython/pull/2704)<br>
+	We had declarations for some functions that did not have any definition.
+- Symbol duplication bugs while using REPL:
+	Variable of specific datatype would be redefined in each REPL loop.
+	- [Fixes complex datatype's symbol duplication bug while using interactive](https://github.com/lcompilers/lpython/pull/2707)
+	- [fix array symbol duplication in interactive mode](https://github.com/lcompilers/lpython/pull/2734)
+- [combining duplicated function into a single templated function](https://github.com/lcompilers/lpython/pull/2727)<br>
+	To reduce code duplication and improve code readability and debugability.
+
+### Pull requests that were not merged
+
+- [Support to redefine of function in REPL](https://github.com/lfortran/lfortran/pull/4391)<br>
+	Implementation of function redefinition is tricky with compiled languages. There are many questions regarding the implementation details; Should the previous definition of the function be kept in memory or deallocated? What if, there is a pointer to the old definition? Should it be updated? If `g` calls `f`, and we redefine `f`, should `g` now be calling the new definition of `f` or the old definition of `f`?
+	I implemented according to what felt correct to me. But then when we compared it to the behaviour of CPython, it was decided to hold off further work. You can find the detailed explanation in [this blog](https://www.vipulcariappa.xyz/blogs/GSoC24-Blog4.html).
+
+### Issues Opened
+
+- [Segfault while printing `dataclass` in REPL](https://github.com/lcompilers/lpython/issues/2793)<br>
+	LPython experiences a segmentation fault and crashes when trying to print a specific type of `dataclass` in REPL. I suspect that the issue is at the LLVM's code, and not our code base.
+- [GitHub Workflow Fails with LLVM 14](https://github.com/lcompilers/lpython/issues/2792)
+- [Blank line within an indented block of code is wrongly parsed on Windows](https://github.com/lcompilers/lpython/issues/2725)<br>
+	Windows uses `\r\n` to represent end of a line. Whereas other operating systems use `\n`. Due to this difference between the end of line representation, the parse ends up parsing the source code incorrectly.
+
+## Acknowledgement
+
+I would like to thank Google Summer of Code for providing this opportunity, and my mentors [Ubaid Shaikh](https://github.com/Shaikh-Ubaid) and [Ondřej Čertík](https://github.com/certik) for there guidance and help throughout the project.

@@ -1,0 +1,42 @@
+---
+title: "GSoC'24 - LPython: First Two Week"
+author: "Vipul Cariappa"
+date: "2024-06-07"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog2.html
+---
+
+
+The last 2 weeks were rough. With the existing implementation of Just-In-Time (JIT) compilation we use for REPL, we were facing issues on Windows.<br>
+Say you declare a function `f` in the first REPL block, and function `g` in the second block. Such that function `g` calls the function `f`. And in the 3rd block, you call `g`; JIT would not be able to locate the function `f`. We were facing this issue only on Windows.<br>
+Currently, on Windows, we are not able to compile with debug symbols; We use the LLVM provided by the conda package manager, the LLVM version it provides, and the MSVC compiler we use in Windows, together do not allow a debug build. This inability to have a debug build made it very difficult to get to the source of the problem we were facing.<br>
+With lots of trial and error, I fixed the issue. I referred to LLVM’s documentation on using JIT and adapted our existing implementation accordingly.<br>
+
+A lot of my work focuses on `libasr`. As the `libasr` is shared between LFortran and LPython, many of the changes introduced to `libasr` need to be tested in both LFortran and LPython.
+
+## Merged Pull Requests
+- [Fix array symbol duplication in interactive mode](https://github.com/lfortran/lfortran/pull/4072) (In LFortran)
+This PR fixed a bug in which array symbols would be duplicated for each REPL evaluation loop. I believe this issue persists in LPython and needs to be fixed there.
+- [Fix ASR verify pass error while using Interactive](https://github.com/lfortran/lfortran/pull/4086) (In LFortran)
+The structure of the ASR is verified using `asr_verify` function. In the interactive mode, we remove the body of the functions executed in the previous REPL block and only keep its declaration. Due to this, `asr_verify` would fail. I had to make changes to `asr_verify` so that it works in the interactive mode.
+- I added the ability to print the top-level expressions in REPL. As of now this printing of top-level expressions only works for primitive types. I will be adding in the ability to print aggregate datatypes like `list`, `tuple`, `dict`, etc., in the upcoming week. I have also written the necessary test cases. Related pull requests (In LPython):
+    - [Initial test for Interactive](https://github.com/lcompilers/lpython/pull/2713)
+    - [Printing top-level Expressions](https://github.com/lcompilers/lpython/pull/2716)
+    - [Support to print `u32` and `u64` in REPL](https://github.com/lcompilers/lpython/pull/2717)
+    - [Support to print `i8`, `u8`, `i16` and `u16` in Interactive mode](https://github.com/lcompilers/lpython/pull/2719)
+    - [REPL `str` support](https://github.com/lcompilers/lpython/pull/2724)
+
+## Open Pull Requests
+- [Fix ASR verify pass error while using Interactive](https://github.com/lcompilers/lpython/pull/2706)
+This PR contains the same changes as previously mentioned, but for LPython.
+- [Support logical values when using interactive](https://github.com/lfortran/lfortran/pull/4006) (In LFortran)
+Support to print logical/boolean datatypes in REPL. This change should also be implemented in LPython.
+
+## Issues Opened
+- [Blank line within an indented block of code is wrongly parsed on Windows](https://github.com/lcompilers/lpython/issues/2725)
+
+---
+
+For the next week, I plan to continue working on implementing the ability to print top-level expressions for the remaining data types that are not yet implemented. Hopefully, I will not be stuck like the last 2 weeks with a difficult to debug problem.

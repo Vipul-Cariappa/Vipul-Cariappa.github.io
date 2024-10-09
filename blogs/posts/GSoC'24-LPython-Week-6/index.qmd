@@ -1,0 +1,34 @@
+---
+title: "GSoC'24 - LPython: 6th Week"
+author: "Vipul Cariappa"
+date: "2024-07-06"
+categories: [GSoC, Code, Internship, "Python", "LPython"]
+image: /assets/images/gsoc-python.png
+aliases:
+    - /blogs/GSoC24-Blog5.html
+---
+
+
+This week was fun. Most of the things went smoothly this week.
+
+Next week is GSoC's mid-term evaluation.
+
+## Open Pull Requests
+- [Support to print `list`s in REPL](https://github.com/lcompilers/lpython/pull/2752)<br>
+Adds support to print top-level expression of `list` type.
+- [CI tests for LLVM 10, 14, 15 and 16](https://github.com/lcompilers/lpython/pull/2754)<br>
+LPython's sister project LFortran tests its code base with multiple versions of LLVM. As LPython and LFortran share a lot of code, I am setting an automated CI workflow to build and run LPython with different versions of LLVM we intend to support. The versions selected are the ones LFortran supports and has automated CI workflow for.<br>
+The CI passes all the tests for all versions of LLVM other than 14. I am not able to reproduce the bug on my local computer as of now.
+- [Underscore: `_` variable in REPL](https://github.com/lcompilers/lpython/pull/2755)<br>
+This PR introduces the `_` (underscore) variable in LPython's REPL (like in CPython's REPL). The `_` variable holds the value of the last evaluated expression from the previous REPL block.
+- [Implement Jupyter kernel](https://github.com/lcompilers/lpython/pull/2756)<br>
+Implementation of Jupyter Kernel for LPython. The code is adapted from LFortran's Kernel implementation.
+
+## Merged Pull Requests
+- [fix array symbol duplication in interactive mode](https://github.com/lcompilers/lpython/pull/2734)
+
+## Pull Requests On-Hold
+- [Support to redefine of function in REPL](https://github.com/lfortran/lfortran/pull/4391)<br>
+Implementation of redefinitions of functions in LFortran's interactive mode. Please read the [previous blog](https://www.vipulcariappa.xyz/blogs/GSoC24-Blog4.html) for details on why this PR is on hold.
+
+I will be working on supporting to print of top-level expressions of other aggregate datatypes in REPL upcoming week. Some of the tests for existing PRs fail in GitHub CI, I will be looking into it.

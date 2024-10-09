@@ -1,0 +1,95 @@
+---
+title: "GSoC'23 - GNU Octave: First 5 Weeks"
+author: "Vipul Cariappa"
+date: "2023-07-09"
+categories: [GSoC, Code, Internship, "GNU Octave"]
+image: /assets/images/gsoc-octave.png
+aliases:
+    - /blogs/GSoC-Blog-3.html
+---
+
+This is an account of all the tasks that I am finished with from the start of GSoC, or am working on at the moment. 
+
+## Completed Tasks
+
+- Moved the repository which was previously hosted by a single person to hosting it under the GNU Octave project at
+GitLab. Work on this front was mainly done by my mentor [Colin](https://gitlab.com/cbm755).
+<br>Link to the repository at GitLab: [GNU Octave / Octave Pythonic](https://gitlab.com/gnu-octave/octave-pythonic).
+
+- Supporting the latest versions of Python in Pythonic.<br>
+Pythonic previously only supported Python version 3.9 and below. Now Pythonic supports the latest version of Python
+which is Python 3.11.
+<br>Link to Merged MR at GitLab: [Support python 3.10 & 3.11 and drops support for less then 3.7](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/75). 
+
+- Using Python Stable ABI in Pythonic to support multiple versions of Python.<br>
+Pythonic now uses [Python Stable ABI](https://docs.python.org/3/c-api/stable.html#stable).
+Python Stable ABI is a limited subset of the Python C API which Python Organisation grantees to be backward and forward
+compatible with old and new versions of Python.
+<br>Link to Merged MR at GitLab: [Updating Pythonic to use Python Stable ABI](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/83).
+
+- Updating the CI/CD pipeline at GitLab to test Pythonic against multiple versions of Python and Octave.<br>
+In this update, we also migrated to use the [official Docker image for Octave](https://hub.docker.com/r/gnuoctave/octave) provided by GNU Octave.
+Now our automated CI/CD testing,
+tests Pythonic with the latest version of Octave which is version 8.2 with all the supported Python versions
+i.e. from Python version 3.7 to 3.11. It also tests Octave 7.1 with Python 3.9 and Octave 6.1 with Python 3.10.
+The CI/CD pipeline updates I am talking about at this point are restricted to testing on Linux.
+For testing on other platforms read the sections below. 
+<br>Link to Merged MR at GitLab: [Updating gitlab CI/CD to use official gnu octave docker image](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/79).
+
+- Provide proof of concept of `pyimport`.<br>
+`pyimport` is a command to import Python functions, classes, namespaces, or any other symbols into the Octave workspace.
+The concept is appreciated, but may not be merged into the main branch as it is a workaround to the fact that function
+handles are not yet supported on Pythonic.
+<br>Link to Merge Request at GitLab: [Add support to import modules using pyimport command](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/81).
+
+- Updated the Pythonic wiki with a list of functions and class methods Pythonic offers.
+<br>Link to the wiki: [Pythonic/fullAPI](https://wiki.octave.org/Pythonic/fullAPI).
+
+## On Going Work
+
+- Implementation of destructor for `pyobject`s<br>
+Destructor was previously not supported on Pythonic.
+Variables which were no longer used were still kept in memory and were not freed/released from memory.
+This was due to a bug in the core Octave interpreter ([bug #46497, classdef: delete destructor method…](https://savannah.gnu.org/bugs/?46497)).
+This bug is now fixed.
+<br>Link to Merge Request at GitLab: [Support for destructor of pyobject](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/80).
+
+- Implementation of `pyenv` function<br>
+`pyenv` is a MATLAB compatibility function.
+`pyenv` lets the user select the version of Python to be used. At the time of writing this article,
+the `pyenv` functionality is working properly on Linux systems, but using it on Windows crashes Octave.
+To me, it looks like an issue with how Octave is packaged on Windows.
+Because depending on how Octave is launched the functionality works or does not work.
+Any progress on this will be appended to this article later.
+<br>Link to Merge Request at GitLab: [`pyenv` function to select python version](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/82).
+
+- Testing on Windows (and MacOS)<br>
+I am primarily focusing on Windows. My mentor is currently looking at MacOS.
+Octave does not offer a Windows Docker image to test on Windows.
+Compiling any octave package which contains C/C++ code required some Linux specific tools to be installed
+(at least in the case of Pythonic), which is usually bundled with Octave on Windows.
+But compiling Pythonic on GitLab's CI/CD pipeline has been a work with no success till now.
+<br>Link to Merge Request on Gitlab: [CI: Build / Test on Windows](https://gitlab.com/gnu-octave/octave-pythonic/-/merge_requests/86).
+
+## Issues / Discussions I Opened 
+
+- A test fails on Windows (when trying it out on my local machine). This is mostly due to an integer overflow.
+<br>Link to the Issue at GitLab: [A test fails on Windows](https://gitlab.com/gnu-octave/octave-pythonic/-/issues/110).
+
+- Errors/Issues I encounter when working on Windows.
+Links to Discussion at Discourse: [How to compile Octave in Windows?](https://octave.discourse.group/t/how-to-compile-octave-in-windows/4624)
+and [Mkoctfile does not work on windows](https://octave.discourse.group/t/mkoctfile-does-not-work-on-windows/4546).
+
+## Miscellaneous
+
+> Issues or discussions I opened or any other contributions to the GNU Octave which do not directly concern my GSoC project.
+
+- Opened topic on Discourse on a bug., which shows the wrong link of packages.
+<br>Link to the Discussion at Discourse: [Wrong link shown in the Community topics related to the release of a package](https://octave.discourse.group/t/wrong-link-shown-in-the-community-topics-related-to-release-of-a-package/4663).
+
+- Bug report filed: ["panic: impossible state reached" while using subsasgn with struct and multiple subs value](https://octave.discourse.group/t/panic-impossible-state-reached-while-using-subsasgn-with-struct-and-multiple-subs-value/4494)
+and [Octave crashes while saving data to file](https://octave.discourse.group/t/octave-crashes-while-saving-data-to-file/4503).
+
+- Work on supporting HDF5 file format: Ongoing [Implementing h5disp](https://github.com/pantxo/oct-hdf5/pull/2);
+Merged Implemented: [test runner script and gihub action to run tests](https://github.com/pantxo/oct-hdf5/pull/3)
+and [Implemented H5A.get_num_attrs](https://github.com/pantxo/oct-hdf5/pull/1).
