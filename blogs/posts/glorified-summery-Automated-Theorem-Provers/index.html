@@ -73,10 +73,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -104,6 +106,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'G-6VG3WD4HTJ', { 'storage': 'none' });
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -136,6 +152,14 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Glorified Summery: Automated Theorem Provers – Vipul Cariappa">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://Vipul-Cariappa.github.io/blogs/posts/glorified-summery-Automated-Theorem-Provers/math.jpg">
+<meta property="og:site_name" content="Vipul Cariappa">
+<meta name="twitter:title" content="Glorified Summery: Automated Theorem Provers – Vipul Cariappa">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://Vipul-Cariappa.github.io/blogs/posts/glorified-summery-Automated-Theorem-Provers/math.jpg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -170,6 +194,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -204,6 +229,12 @@ window.Quarto = {
       </div>
     </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">October 9, 2024</p>
+      </div>
+    </div>
       
     </div>
     
@@ -236,12 +267,31 @@ window.Quarto = {
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In mathematics creating or coming up with a proof is a difficult procedure. The proof we do come up with can contain errors and mistakes that need to be checked and verified for. Computerisation of mathematical proofs could potentially speed up the process of generating and verifying the correctness of proofs. Computerisation of mathematics proofs begins by defining a formal language that can represent complex mathematical statements.</p>
-<p>The most common such representation is <strong>First Order Logic (FOL)</strong>. First order logic is also called predicate logic or predicate calculus (Wikipedia The Free Encyclopedia, First Order Logic, 2024). First order logic describes a meta-language using which you could describe the actual language you want to use. First order language used constant symbols, variable symbols (there can be free variable and bound variable), function symbols of n-ary, predicates symbols of n-ary, and logical symbols and syntax and semantic rules defining what makes a well formed statement. For example, the mathematical statement of additive inverse would be represented as <span class="math display">\[\forall x . \exists y . x + y = 0\]</span> The statement is read as <em>for all x there exists y such that their sum is zero</em>. Here, <span class="math inline">\(\forall\)</span>, <span class="math inline">\(\exists\)</span> are logical symbols, <span class="math inline">\(0\)</span> is a constant symbols, <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are bound variable symbols, <span class="math inline">\(+\)</span> is a binary function in infix notation, and <span class="math inline">\(=\)</span> can be thought of as a predicate. First order logic requires an additional information regarding the proving machinism, that describes how to construct new valid well formed mathematical statements from existing ones. This proving machinism is in the form of <em>rules of inference</em> (Wikipedia The Free Encyclopedia, Rules of Inference, 2024). An example for a rule of inference commonly used in first order logic is Modus Ponen <span class="math display">\[(p) \land (p \to q) \implies q\]</span> Given that; if <span class="math inline">\(p\)</span> then <span class="math inline">\(q\)</span>, and we know that <span class="math inline">\(p\)</span> is true, then it follows that <span class="math inline">\(q\)</span> must be true.</p>
-<p>First order logic may not be required to represent some simple statements where we could only use Zeroth Order Logic also called propositional logic (Wikipedia The Free Encyclopedia, Propositional calculus, 2024). Similarly, first order logic might be inadequate to represent more complex mathematical statements where Second Order Logic or Higher Order Logic may be using (Wikipedia The Free Encyclopedia, Higher Order Logic, 2024). For example, there is no way in first order logic to identify the set of all cubes and tetrahedrons. But the existence of this set can be asserted in second-order logic as <span class="math display">\[\exists P. \forall x . (P(x) \leftrightarrow Cube(x) \lor Tet(x))\]</span></p>
-<p>Another representation is <strong>Type Theory</strong>. A Type Theory is the formal presentation of a specific type system (Wikipedia The Free Encyclopedia, Type Theory, 2024). Type theory is the academic study of type systems. Some type theories serve as alternatives to set theory as a foundation of mathematics. Two influential type theories that have been proposed as foundations are: - Typed λ-calculus of Alonzo Church (Helmut Brandl, 2024) - Intuitionistic type theory of Per Martin-Löf (Hall, J. G., ed.&nbsp;Intuitionistic Type Theory)</p>
+<p>The most common such representation is <strong>First Order Logic (FOL)</strong>. First order logic is also called predicate logic or predicate calculus (Wikipedia The Free Encyclopedia, First Order Logic, 2024). First order logic describes a meta-language using which you could describe the actual language you want to use. First order language used constant symbols, variable symbols (there can be free variable and bound variable), function symbols of n-ary, predicates symbols of n-ary, and logical symbols and syntax and semantic rules defining what makes a well formed statement. For example, the mathematical statement of additive inverse would be represented as</p>
+<p><span class="math display">\[\forall x . \exists y . x + y = 0\]</span></p>
+<p>The statement is read as <em>for all x there exists y such that their sum is zero</em>. Here, <span class="math inline">\(\forall\)</span>, <span class="math inline">\(\exists\)</span> are logical symbols, <span class="math inline">\(0\)</span> is a constant symbols, <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are bound variable symbols, <span class="math inline">\(+\)</span> is a binary function in infix notation, and <span class="math inline">\(=\)</span> can be thought of as a predicate. First order logic requires an additional information regarding the proving machinism, that describes how to construct new valid well formed mathematical statements from existing ones. This proving machinism is in the form of <em>rules of inference</em> (Wikipedia The Free Encyclopedia, Rules of Inference, 2024). An example for a rule of inference commonly used in first order logic is Modus Ponen</p>
+<p><span class="math display">\[(p) \land (p \to q) \implies q\]</span></p>
+<p>Given that; if <span class="math inline">\(p\)</span> then <span class="math inline">\(q\)</span>, and we know that <span class="math inline">\(p\)</span> is true, then it follows that <span class="math inline">\(q\)</span> must be true.</p>
+<p>First order logic may not be required to represent some simple statements where we could only use Zeroth Order Logic also called propositional logic (Wikipedia The Free Encyclopedia, Propositional calculus, 2024). Similarly, first order logic might be inadequate to represent more complex mathematical statements where Second Order Logic or Higher Order Logic may be using (Wikipedia The Free Encyclopedia, Higher Order Logic, 2024). For example, there is no way in first order logic to identify the set of all cubes and tetrahedrons. But the existence of this set can be asserted in second-order logic as</p>
+<p><span class="math display">\[\exists P. \forall x . (P(x) \leftrightarrow Cube(x) \lor Tet(x))\]</span></p>
+<p>Another representation is <strong>Type Theory</strong>. A Type Theory is the formal presentation of a specific type system (Wikipedia The Free Encyclopedia, Type Theory, 2024). Type theory is the academic study of type systems. Some type theories serve as alternatives to set theory as a foundation of mathematics. Two influential type theories that have been proposed as foundations are:</p>
+<ul>
+<li>Typed λ-calculus of Alonzo Church (Helmut Brandl, 2024)</li>
+<li>Intuitionistic type theory of Per Martin-Löf (Hall, J. G., ed.&nbsp;Intuitionistic Type Theory)</li>
+</ul>
 <p>Given a formal definition for what constitutes as a valid well formed mathematical statement with syntax and semantics to represent it, along with formal definition to construct proofs, we could develop computer programs to verify and generate proofs.</p>
-<p>Examples of Automated Theorem Provers that use Formal Logic are - Vampire (Vampire, 2024) - E (The E Theorem Prover, 2024) - Z3 Theorem Prover (GitHub, The Z3 Theorem Prover, 2024)</p>
-<p>Examples of Automated Theorem Provers that use Type Theory are - LEAN (Programming Language and Theorem Prover - LEAN, 2024) - Coq (The Coq Proof Assistant, 2024) LEAN and Coq are not fully automated provers, but can be used to verify proofs and works as an computer assistant for mathematicians using it.</p>
+<p>Examples of Automated Theorem Provers that use Formal Logic are</p>
+<ul>
+<li>Vampire (Vampire, 2024)</li>
+<li>E (The E Theorem Prover, 2024)</li>
+<li>Z3 Theorem Prover (GitHub, The Z3 Theorem Prover, 2024)</li>
+</ul>
+<p>Examples of Automated Theorem Provers that use Type Theory are</p>
+<ul>
+<li>LEAN (Programming Language and Theorem Prover - LEAN, 2024)</li>
+<li>Coq (The Coq Proof Assistant, 2024)</li>
+</ul>
+<p>LEAN and Coq are not fully automated provers, but can be used to verify proofs and works as an computer assistant for mathematicians using it.</p>
 </section>
 <section id="some-of-the-methods-for-proving" class="level2">
 <h2 class="anchored" data-anchor-id="some-of-the-methods-for-proving">Some of the Methods for Proving</h2>
@@ -252,15 +302,27 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>Vampire using proof by Refutation algorithm in its provers. (Kovács, L. &amp; Voronkov, A, 2013)</p>
 </blockquote>
-<p>Resolution is a rule of inference leading to a refutation-complete theorem-proving technique for sentences in zeroth and first order logic. For propositional logic, systematically applying the resolution rule acts as a decision procedure for formula unsatisfiability, solving the (complement of the) Boolean satisfiability problem. (Wikipedia The Free Encyclopedia, Resolution (logic), 2024) Resolution rule of inference is stated as <span class="math display">\[(p \lor q) \land (\lnot p \lor q) \implies q\]</span> SLD resolution (Selective Linear Definite clause resolution) is the basic inference rule used in logic programming. It is a refinement of resolution, which is both sound and refutation complete for Horn clauses. (Wikipedia The Free Encyclopedia, Selective Linear Definite clause resolution, 2024) #### Model Elimination The mnemonic label “model elimination” is used because the procedure seeks the truth-functionally contradictory statement associated with the procedures of creating new statements using the axioms by developing statements already “false” under some of the possible truth assignments over its atomic components. The procedure strives to form new statements which increase the percentage of the truth assignments yielding false for the statement. (Loveland, D.W. ,1968)</p>
+<p>Resolution is a rule of inference leading to a refutation-complete theorem-proving technique for sentences in zeroth and first order logic. For propositional logic, systematically applying the resolution rule acts as a decision procedure for formula unsatisfiability, solving the (complement of the) Boolean satisfiability problem. (Wikipedia The Free Encyclopedia, Resolution (logic), 2024)</p>
+<p>Resolution rule of inference is stated as</p>
+<p><span class="math display">\[(p \lor q) \land (\lnot p \lor q) \implies q\]</span></p>
+<p>SLD resolution (Selective Linear Definite clause resolution) is the basic inference rule used in logic programming. It is a refinement of resolution, which is both sound and refutation complete for Horn clauses. (Wikipedia The Free Encyclopedia, Selective Linear Definite clause resolution, 2024)</p>
+</section>
+<section id="model-elimination" class="level4">
+<h4 class="anchored" data-anchor-id="model-elimination">Model Elimination</h4>
+<p>The mnemonic label “model elimination” is used because the procedure seeks the truth-functionally contradictory statement associated with the procedures of creating new statements using the axioms by developing statements already “false” under some of the possible truth assignments over its atomic components. The procedure strives to form new statements which increase the percentage of the truth assignments yielding false for the statement. (Loveland, D.W. ,1968)</p>
 </section>
 <section id="method-of-analytic-tableau" class="level4">
 <h4 class="anchored" data-anchor-id="method-of-analytic-tableau">Method of Analytic Tableau</h4>
-<p>An analytic tableau is a tree structure computed for a logical formula, having at each node a sub-formula of the original formula to be proved or refuted. Computation constructs this tree and uses it to prove or refute the whole formula. The tableau method can also determine the satisfiability of finite sets of formulas of various logics. It is the most popular proof procedure for modal logics. A method of truth trees contains a fixed set of rules for producing trees from a given logical formula, or set of logical formulas. Those trees will have more formulas at each branch, and in some cases, a branch can come to contain both a formula and its negation, which is to say, a contradiction. In that case, the branch is said to close. If every branch in a tree closes, the tree itself is said to close. In virtue of the rules for construction of tableaux, a closed tree is a proof that the original formula, or set of formulas, used to construct it was itself self-contradictory, and therefore false. Conversely, a tableau can also prove that a logical formula is tautologous: if a formula is tautologous, its negation is a contradiction, so a tableau built from its negation will close (Colin Howson, 1997).</p>
+<p>An analytic tableau is a tree structure computed for a logical formula, having at each node a sub-formula of the original formula to be proved or refuted. Computation constructs this tree and uses it to prove or refute the whole formula. The tableau method can also determine the satisfiability of finite sets of formulas of various logics. It is the most popular proof procedure for modal logics.</p>
+<p>A method of truth trees contains a fixed set of rules for producing trees from a given logical formula, or set of logical formulas. Those trees will have more formulas at each branch, and in some cases, a branch can come to contain both a formula and its negation, which is to say, a contradiction. In that case, the branch is said to close. If every branch in a tree closes, the tree itself is said to close. In virtue of the rules for construction of tableaux, a closed tree is a proof that the original formula, or set of formulas, used to construct it was itself self-contradictory, and therefore false. Conversely, a tableau can also prove that a logical formula is tautologous: if a formula is tautologous, its negation is a contradiction, so a tableau built from its negation will close (Colin Howson, 1997).</p>
 </section>
 <section id="quantifier-elimination" class="level4">
 <h4 class="anchored" data-anchor-id="quantifier-elimination">Quantifier Elimination</h4>
-<p>The idea behind quantifier elimination is to rewrite the statements containing quantifiers into statements that do not contain any quantifiers. It is easier to deal with statements without quantifiers, proving such statements is an easier task. Informally, a quantified statement “<span class="math inline">\(\forall x\)</span> such that <span class="math inline">\(…\)</span>” can be viewed as a question “When is there an <span class="math inline">\(x\)</span> such that <span class="math inline">\(…\)</span> ?”, and the statement without quantifiers can be viewed as the answer to that question (Wikipedia The Free Encyclopedia, Quantifier elimination, 2024). For example, the statement “quadratic polynomial has a real root if and only if its discriminant is non-negative” can be represented as <span class="math display">\[\exists x \in R . (a \neq 0 \land ax^2 +bx + c = 0)\]</span> using quantifiers, and <span class="math display">\[a \neq 0 \land b^2 -4ac &gt; 0\]</span> without any quantifiers.</p>
+<p>The idea behind quantifier elimination is to rewrite the statements containing quantifiers into statements that do not contain any quantifiers. It is easier to deal with statements without quantifiers, proving such statements is an easier task. Informally, a quantified statement “<span class="math inline">\(\forall x\)</span> such that <span class="math inline">\(…\)</span>” can be viewed as a question “When is there an <span class="math inline">\(x\)</span> such that <span class="math inline">\(…\)</span> ?”, and the statement without quantifiers can be viewed as the answer to that question (Wikipedia The Free Encyclopedia, Quantifier elimination, 2024). For example, the statement “quadratic polynomial has a real root if and only if its discriminant is non-negative” can be represented as</p>
+<p><span class="math display">\[\exists x \in R . (a \neq 0 \land ax^2 +bx + c = 0)\]</span></p>
+<p>using quantifiers, and</p>
+<p><span class="math display">\[a \neq 0 \land b^2 -4ac &gt; 0\]</span></p>
+<p>without any quantifiers.</p>
 <p>Similar idea can be applied when statements are represented in higher order logic. Statements in higher order logic can be transformed or reduced into simpler statements of first order logic. (Manfred Kerber. 1991)</p>
 </section>
 <section id="smt-solvers" class="level4">
@@ -272,21 +334,33 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="discoveries-using-automated-theorem-provers">Discoveries using Automated Theorem Provers</h2>
 <section id="robbins-conjecture" class="level4">
 <h4 class="anchored" data-anchor-id="robbins-conjecture">Robbins Conjecture</h4>
-<p>Robbins algebra is an algebra containing a single binary operation, usually denoted by <span class="math inline">\(\lor\)</span> (or), and a single unary operation usually denoted by <span class="math inline">\(\lnot\)</span> (not) satisfying the following axioms: for all <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> &amp; <span class="math inline">\(c\)</span> - Associativity: <span class="math inline">\(a \lor (b \lor c) = (a \lor b) \lor c\)</span> - Commutativity: <span class="math inline">\(a \lor b = b \lor a\)</span> - Robbins equation: <span class="math inline">\(\lnot (\lnot (a \lor b) \lor \lnot (a \lor \lnot b)) = a\)</span> For many years, it was conjectured, but unproven, that all Robbins algebras are Boolean algebras. (Robbins Algebras Are Boolean, 2024) William McCune proved the conjecture in 1996, using the automated theorem prover EQP (EQP: Equational Theorem Prover, 2024).</p>
+<p>Robbins algebra is an algebra containing a single binary operation, usually denoted by <span class="math inline">\(\lor\)</span> (or), and a single unary operation usually denoted by <span class="math inline">\(\lnot\)</span> (not) satisfying the following axioms:</p>
+<p>for all <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> &amp; <span class="math inline">\(c\)</span></p>
+<ul>
+<li>Associativity: <span class="math inline">\(a \lor (b \lor c) = (a \lor b) \lor c\)</span></li>
+<li>Commutativity: <span class="math inline">\(a \lor b = b \lor a\)</span></li>
+<li>Robbins equation: <span class="math inline">\(\lnot (\lnot (a \lor b) \lor \lnot (a \lor \lnot b)) = a\)</span></li>
+</ul>
+<p>For many years, it was conjectured, but unproven, that all Robbins algebras are Boolean algebras. (Robbins Algebras Are Boolean, 2024) William McCune proved the conjecture in 1996, using the automated theorem prover EQP (EQP: Equational Theorem Prover, 2024).</p>
 </section>
 <section id="four-colour-theorem" class="level4">
 <h4 class="anchored" data-anchor-id="four-colour-theorem">Four Colour Theorem</h4>
-<p>The four colour theorem, or the four colour map theorem, states that no more than four colours are required to colour the regions of any map so that no two adjacent regions have the same colour. The theorem is a stronger version of the five color theorem, which can be shown using a significantly simpler argument. Although the weaker five color theorem was proven already in the 1800s, the four color theorem resisted until 1976 when it was proven by Kenneth Appel and Wolfgang Haken. The Appel-Haken proof proceeds by analyzing a very large number of reducible configurations. This was improved upon in 1997 by Robertson, Sanders, Seymour, and Thomas who have managed to decrease the number of such configurations to 633 – still an extremely long case analysis. In 2005, the theorem was verified by Georges Gonthier using a general-purpose theorem-proving software. (K. Appel. W. Haken, 1977)</p>
+<p>The four colour theorem, or the four colour map theorem, states that no more than four colours are required to colour the regions of any map so that no two adjacent regions have the same colour.</p>
+<p>The theorem is a stronger version of the five color theorem, which can be shown using a significantly simpler argument. Although the weaker five color theorem was proven already in the 1800s, the four color theorem resisted until 1976 when it was proven by Kenneth Appel and Wolfgang Haken.</p>
+<p>The Appel-Haken proof proceeds by analyzing a very large number of reducible configurations. This was improved upon in 1997 by Robertson, Sanders, Seymour, and Thomas who have managed to decrease the number of such configurations to 633 – still an extremely long case analysis. In 2005, the theorem was verified by Georges Gonthier using a general-purpose theorem-proving software. (K. Appel. W. Haken, 1977)</p>
 </section>
 <section id="formalisation-of-fermats-last-theorem" class="level4">
 <h4 class="anchored" data-anchor-id="formalisation-of-fermats-last-theorem">Formalisation of Fermat’s Last Theorem</h4>
-<p>Fermat’s Last Theorem states that no three positive integers <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span> satisfy the equation <span class="math inline">\(a^n + b^n = c^n\)</span> for any integer value of <span class="math inline">\(n\)</span> greater than 2. The cases <span class="math inline">\(n = 1\)</span> and <span class="math inline">\(n = 2\)</span> have been known since antiquity to have infinitely many solutions. The proposition was first stated as a theorem by Pierre de Fermat around 1637 in the margin of a copy of Arithmetica. After 358 years of effort by mathematicians, the first successful proof was released in 1994 by Andrew Wiles and formally published in 1995. The Fermat’s Last Theorem Project is a project to formalise the entire proof of Fermat’s Last Theorem. The project is an open project, where anyone could contribute. The LEAN programming language which is also a proof assist-er is used for this process of formalisation. The project is hosted on GitHub. The proof depends on multiple areas of mathematics and the current database of theorems in LEAN is inadequate. The project intends to formalise multiple branches of mathematics over next couple of years. The project will be funded by Engineering &amp; Physical Sciences Research Council for the first 5 years. (The Fermat’s Last Theorem Project, Lean community blog, 2024)</p>
+<p>Fermat’s Last Theorem states that no three positive integers <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span> satisfy the equation <span class="math inline">\(a^n + b^n = c^n\)</span> for any integer value of <span class="math inline">\(n\)</span> greater than 2. The cases <span class="math inline">\(n = 1\)</span> and <span class="math inline">\(n = 2\)</span> have been known since antiquity to have infinitely many solutions. The proposition was first stated as a theorem by Pierre de Fermat around 1637 in the margin of a copy of Arithmetica. After 358 years of effort by mathematicians, the first successful proof was released in 1994 by Andrew Wiles and formally published in 1995.</p>
+<p>The Fermat’s Last Theorem Project is a project to formalise the entire proof of Fermat’s Last Theorem. The project is an open project, where anyone could contribute. The LEAN programming language which is also a proof assist-er is used for this process of formalisation. The project is hosted on GitHub. The proof depends on multiple areas of mathematics and the current database of theorems in LEAN is inadequate. The project intends to formalise multiple branches of mathematics over next couple of years. The project will be funded by Engineering &amp; Physical Sciences Research Council for the first 5 years. (The Fermat’s Last Theorem Project, Lean community blog, 2024)</p>
 </section>
 </section>
 <section id="limitation" class="level2">
 <h2 class="anchored" data-anchor-id="limitation">Limitation</h2>
 <p><strong>Definitions</strong></p>
-<p><strong>Completeness:</strong> A formal theory (that is rules of inference and starting set of axioms) is said to be complete if we can prove or prove the negation of any statement that can be expressed in that system. <strong>Consistent:</strong> A formal theory is said to be consistent if it is free of contradictions. That is, the theory should not be able to prove a statement and also it negation. In such a system, it is possible to prove any and all statements to be true statement. <strong>Decidable:</strong> A formal theory is said to be decidable if there exists an algorithm that takes in a statement in the system as its input and returns true or false depending on if the statement is true under the theory or false.</p>
+<p><strong>Completeness:</strong> A formal theory (that is rules of inference and starting set of axioms) is said to be complete if we can prove or prove the negation of any statement that can be expressed in that system.</p>
+<p><strong>Consistent:</strong> A formal theory is said to be consistent if it is free of contradictions. That is, the theory should not be able to prove a statement and also it negation. In such a system, it is possible to prove any and all statements to be true statement.</p>
+<p><strong>Decidable:</strong> A formal theory is said to be decidable if there exists an algorithm that takes in a statement in the system as its input and returns true or false depending on if the statement is true under the theory or false.</p>
 <p>David Hilbert wanted to come up with a formal theory of mathematics that is complete, consistent and decidable, and could express entirety of mathematics. (Stanford Encyclopedia of Philosophy Archive, Hilbert’s Program, 2024)</p>
 <p>Gödel’s incompleteness theorems by Kurt Gödel, showed that any system complex enough to do arithmetic on natural numbers cannot be complete, consistent and decidable at the same time. (Kurt Gödel, 1931)</p>
 <p>The first incompleteness theorem states that no consistent system of axioms whose theorems can be listed by an effective procedure (i.e.&nbsp;an algorithm) is capable of proving all truths about the arithmetic of natural numbers. For any such consistent formal system, there will always be statements about natural numbers that are true, but that are unprovable within the system.</p>
@@ -299,7 +373,11 @@ window.Quarto = {
 <h4 class="anchored" data-anchor-id="solving-a-exercise-problem-from-discrete-mathematics-textbook">Solving a exercise problem from Discrete Mathematics Textbook</h4>
 <p><strong>Problem Statement:</strong> Determine whether this argument is valid: If Superman were able and willing to prevent evil, he would do so. If Superman were unable to prevent evil, he would be impotent; if he were unwilling to prevent evil, he would be malevolent. Superman does not prevent evil. If Superman exists, he is neither impotent nor malevolent. Therefore, Superman does not exist. (Kenneth Rosen, 2011)</p>
 <p>The problem can be solved using zeroth order logic (propositional logic). We first need to represent the question in notations of formal logic.</p>
-<p>Let the following be constant symbols representing an atomic statement from the problem statement <span class="math inline">\(a\)</span>: “Superman is able to prevent evil” <span class="math inline">\(b\)</span>: “Superman is willing to prevent evil” <span class="math inline">\(c\)</span>: “Superman is impotent” <span class="math inline">\(d\)</span>: “Superman is malevolent” <span class="math inline">\(e\)</span>: “Superman prevents evil” <span class="math inline">\(f\)</span>: “Superman exists” Now, the assumptions or the axioms can be written as follows: <span class="math inline">\((a \land b) \to e\)</span>: “If Superman were able and willing to prevent evil, he would do so” <span class="math inline">\(\lnot e \to c\)</span>: “If Superman were unable to prevent evil, he would be impotent” <span class="math inline">\(\lnot b \to d\)</span>: “if he were unwilling to prevent evil, he would be malevolent” <span class="math inline">\(\lnot e\)</span>: “Superman does not prevent evil.” <span class="math inline">\(f \to (\lnot c \land \lnot d)\)</span>: “If Superman exists, he is neither impotent nor malevolent” And the conclusion would be: <span class="math inline">\(\lnot f\)</span>: “Superman does not exist”</p>
+<p>Let the following be constant symbols representing an atomic statement from the problem statement</p>
+<p><span class="math inline">\(a\)</span>: “Superman is able to prevent evil” <br><span class="math inline">\(b\)</span>: “Superman is willing to prevent evil” <br><span class="math inline">\(c\)</span>: “Superman is impotent” <br><span class="math inline">\(d\)</span>: “Superman is malevolent” <br><span class="math inline">\(e\)</span>: “Superman prevents evil” <br><span class="math inline">\(f\)</span>: “Superman exists”</p>
+<p>Now, the assumptions or the axioms can be written as follows:</p>
+<p><span class="math inline">\((a \land b) \to e\)</span>: “If Superman were able and willing to prevent evil, he would do so” <br><span class="math inline">\(\lnot e \to c\)</span>: “If Superman were unable to prevent evil, he would be impotent” <br><span class="math inline">\(\lnot b \to d\)</span>: “if he were unwilling to prevent evil, he would be malevolent” <br><span class="math inline">\(\lnot e\)</span>: “Superman does not prevent evil.” <br><span class="math inline">\(f \to (\lnot c \land \lnot d)\)</span>: “If Superman exists, he is neither impotent nor malevolent”</p>
+<p>And the conclusion would be: <br><span class="math inline">\(\lnot f\)</span>: “Superman does not exist”</p>
 <section id="solving-using-vampire" class="level5">
 <h5 class="anchored" data-anchor-id="solving-using-vampire">Solving using Vampire</h5>
 <p>Vampire uses TPTP (TPTP, 2024) syntax to represent mathematical statements. The above mathematical statements will be written as:</p>
@@ -467,7 +545,8 @@ fof(
 ...</code></pre>
 <section id="using-lean-to-prove-sum-of-two-even-numbers-is-even" class="level5">
 <h5 class="anchored" data-anchor-id="using-lean-to-prove-sum-of-two-even-numbers-is-even">Using LEAN to prove sum of two even numbers is even</h5>
-<p>LEAN is based on Type Theory. LEAN does not provide a proof, but is a interactive proof assistant, that can detect errors in proof and can verify the proof. If the LEAN compiler does not give any error it means that the proof is a valid proof. The proof of sum of two even numbers is even in LEAN looks as follows:</p>
+<p>LEAN is based on Type Theory. LEAN does not provide a proof, but is a interactive proof assistant, that can detect errors in proof and can verify the proof. If the LEAN compiler does not give any error it means that the proof is a valid proof.</p>
+<p>The proof of sum of two even numbers is even in LEAN looks as follows:</p>
 <pre class="lean"><code>def is_even (a : Nat) := ∃ b, a = 2 * b
 
 theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
@@ -544,6 +623,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
