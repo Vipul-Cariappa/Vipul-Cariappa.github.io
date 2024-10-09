@@ -16,10 +16,9 @@ website:
   favicon: /assets/images/favicon.ico
   twitter-card: true
   open-graph: true
+  cookie-consent: true
   google-analytics:
     tracking-id: "G-6VG3WD4HTJ"
-    storage: none
-    version: 3
 
 format:
   html:
