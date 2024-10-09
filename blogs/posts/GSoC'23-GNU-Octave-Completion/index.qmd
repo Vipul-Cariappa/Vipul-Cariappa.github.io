@@ -6,6 +6,10 @@ categories: [GSoC, Code, Internship, "GNU Octave"]
 image: /assets/images/gsoc-octave.png
 aliases:
     - /blogs/GSoC-2023-Blog-Final.html
+open-graph:
+  description: |
+    My project focused on improving the state of the octave-pythonic package of Octave. Octave-Pythonic provides support to use/call Python functions, modules and classes from within Octave REPL. Octave-Pythonic aims to be MATLAB compatible...
+  image: /assets/images/gsoc-octave.png
 ---
 
 

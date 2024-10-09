@@ -5,6 +5,10 @@ date: "2024-10-08"
 date-modified: "2024-10-09"
 categories: [Math, Logic]
 image: math.jpg
+open-graph:
+  description: |
+    In mathematics creating or coming up with a proof is a difficult procedure. The proof we do come up with can contain errors and mistakes that need to be checked and verified for. Computerisation of mathematical proofs could potentially speed up the process of generating and verifying the correctness of proofs...
+  image: math.jpg
 ---
 
 

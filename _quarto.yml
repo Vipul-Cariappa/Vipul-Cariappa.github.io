@@ -14,8 +14,8 @@ website:
       - href: /assets/My-Resume.pdf
         text: Résumé
   favicon: /assets/images/favicon.ico
-  twitter-card: true
-  open-graph: true
+  open-graph:
+    locale: en_IN
   cookie-consent: true
   google-analytics:
     tracking-id: "G-6VG3WD4HTJ"

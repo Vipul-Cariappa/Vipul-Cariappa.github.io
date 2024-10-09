@@ -6,6 +6,10 @@ categories: [GSoC, Code, Internship, "Python", "LPython"]
 image: /assets/images/gsoc-python.png
 aliases:
     - /blogs/GSoC24-Blog2.html
+open-graph:
+  description: |
+    The last 2 weeks were rough. With the existing implementation of Just-In-Time (JIT) compilation we use for REPL, we were facing issues on Windows...
+  image: /assets/images/gsoc-python.png
 ---
 
 

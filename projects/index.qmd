@@ -1,5 +1,10 @@
 ---
-title: "Projects | Vipul Cariappa"
+title: "Projects"
+open-graph:
+  description: |
+    List of personal projects I have worked on or I am currently working on.
+    Would love to have your contributions.
+  image: /assets/images/vipul-cartoon.jpeg
 aliases: 
   - /projects.html
 ---

@@ -6,6 +6,10 @@ categories: [GSoC, Code, Internship, "Python", "LPython"]
 image: /assets/images/gsoc-python.png
 aliases:
     - /blogs/GSoC24-Blog6.html
+open-graph:
+  description: |
+    This was a fun week again. My mentor Ondrej attended the SciPy conference and also presented LPython in his talk. At the start of the week, he asked me about the status of REPL and Jupyter Notebook support for LPython...
+  image: /assets/images/gsoc-python.png
 ---
 
 

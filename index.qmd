@@ -1,6 +1,9 @@
 ---
 title: "Vipul Cariappa"
 image: /assets/images/vipul-cartoon.jpeg
+open-graph:
+  description: "About me"
+  image: /assets/images/vipul-cartoon.jpeg
 about:
   template: jolla
   links:
