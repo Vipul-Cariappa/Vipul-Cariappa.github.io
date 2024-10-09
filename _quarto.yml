@@ -11,6 +11,8 @@ website:
         text: Blog
       - href: /projects/
         text: Projects
+      - href: /assets/My-Resume.pdf
+        text: Résumé
   favicon: /assets/images/favicon.ico
   twitter-card: true
   open-graph: true
