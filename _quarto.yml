@@ -1,6 +1,5 @@
 project:
   type: website
-  output-dir: out
 
 website:
   title: "Vipul Cariappa"
