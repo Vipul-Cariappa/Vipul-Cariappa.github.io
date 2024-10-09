@@ -2,42 +2,42 @@
   {
     "objectID": "projects/index.html",
     "href": "projects/index.html",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "",
     "text": "PyC is a general purpose binding between Python Programming Language and C/C++. My goal behind developing this binding is to enable the use of C/C++ libraries inside Python with very few to no modifications to the source libraries and without any recompilations of the original library. Currently PyC only works on linux machines where the library is compiled to a shared object (.so file / dynamic library). PyC is purely written in C. It depends on libclang to parse the header file of the library to identify function symbols available and their parameter types and typedefs, structs, unions and enums. PyC is actively being developed and is not bug free yet. You can find the link to the source here."
   },
   {
     "objectID": "projects/index.html#pyc",
     "href": "projects/index.html#pyc",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "",
     "text": "PyC is a general purpose binding between Python Programming Language and C/C++. My goal behind developing this binding is to enable the use of C/C++ libraries inside Python with very few to no modifications to the source libraries and without any recompilations of the original library. Currently PyC only works on linux machines where the library is compiled to a shared object (.so file / dynamic library). PyC is purely written in C. It depends on libclang to parse the header file of the library to identify function symbols available and their parameter types and typedefs, structs, unions and enums. PyC is actively being developed and is not bug free yet. You can find the link to the source here."
   },
   {
     "objectID": "projects/index.html#scivis",
     "href": "projects/index.html#scivis",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "SciVis",
     "text": "SciVis\nSciVis stands for Scientific Visualizer. Even though it is called Scientific Visualizer it should have actually been MathVis, because all the visualizations available right now are related to mathematics. With this you can visualize or graph any mathematical function. SciVis can also compute and visualize Taylor series and Fourier series of any given function. SciVis can calculate integral and derivative of any given function and graph it. SciVis also provides a truth table generator. There are many more visualizations planned to be implemented and development is still going on. The site is developed using svelte and the backend is developed in fastAPI. You can find the source code here."
   },
   {
     "objectID": "projects/index.html#py-lua",
     "href": "projects/index.html#py-lua",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "py-lua",
     "text": "py-lua\nSimilar to PyC, py-lua is also a general purpose binding. This time it is between Python Programming Language and Lua Programming Language. Py-lua lets you use any lua module inside of python and also allows the use of any python module inside lua. It converts data types between the two languages seamlessly and also supports Object Oriented Programming features. Py-lua can also propagate exceptions raised in one language to the other language. It is written in C Programming Language. You can find the source here."
   },
   {
     "objectID": "projects/index.html#coder",
     "href": "projects/index.html#coder",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "coder",
     "text": "coder\nInspired from competitive programming sites like leetcode and codewars. I wanted to know how these sites are implemented. So I created my own version of it. Here you can create your own questions also, to which you need to write a solution and also the test cases to verify if the answer is correct. You can find the source here and the site here."
   },
   {
     "objectID": "projects/index.html#expenses-recorder",
     "href": "projects/index.html#expenses-recorder",
-    "title": "Projects | Vipul Cariappa",
+    "title": "Projects",
     "section": "Expenses Recorder",
     "text": "Expenses Recorder\nThis web site will help you manage your daily expenses. This site allows a user to form groups and collectively track expenses. A user can form groups and share its name and password with others to join the group. Members in a group can add, edit and delete bill’s created. Creator of a group has the ability to remove an existing member from the group or/and delete the group. You can find the source here."
   },
