@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Vipul Cariappa">
+<meta name="author" content="Ravi Kamath">
+<meta name="dcterms.date" content="2024-10-08">
+
+<title>Glorified Summery: Automated Theorem Provers – Vipul Cariappa</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../..//assets/images/favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Vipul Cariappa</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blogs/"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../projects/"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Glorified Summery: Automated Theorem Provers</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Math</div>
+                <div class="quarto-category">Logic</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Authors</div>
+      <div class="quarto-title-meta-contents">
+               <p>Vipul Cariappa </p>
+               <p>Ravi Kamath </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 8, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#some-of-the-methods-for-proving" id="toc-some-of-the-methods-for-proving" class="nav-link" data-scroll-target="#some-of-the-methods-for-proving">Some of the Methods for Proving</a></li>
+  <li><a href="#discoveries-using-automated-theorem-provers" id="toc-discoveries-using-automated-theorem-provers" class="nav-link" data-scroll-target="#discoveries-using-automated-theorem-provers">Discoveries using Automated Theorem Provers</a></li>
+  <li><a href="#limitation" id="toc-limitation" class="nav-link" data-scroll-target="#limitation">Limitation</a></li>
+  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In mathematics creating or coming up with a proof is a difficult procedure. The proof we do come up with can contain errors and mistakes that need to be checked and verified for. Computerisation of mathematical proofs could potentially speed up the process of generating and verifying the correctness of proofs. Computerisation of mathematics proofs begins by defining a formal language that can represent complex mathematical statements.</p>
+<p>The most common such representation is <strong>First Order Logic (FOL)</strong>. First order logic is also called predicate logic or predicate calculus (Wikipedia The Free Encyclopedia, First Order Logic, 2024). First order logic describes a meta-language using which you could describe the actual language you want to use. First order language used constant symbols, variable symbols (there can be free variable and bound variable), function symbols of n-ary, predicates symbols of n-ary, and logical symbols and syntax and semantic rules defining what makes a well formed statement. For example, the mathematical statement of additive inverse would be represented as <span class="math display">\[\forall x . \exists y . x + y = 0\]</span> The statement is read as <em>for all x there exists y such that their sum is zero</em>. Here, <span class="math inline">\(\forall\)</span>, <span class="math inline">\(\exists\)</span> are logical symbols, <span class="math inline">\(0\)</span> is a constant symbols, <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are bound variable symbols, <span class="math inline">\(+\)</span> is a binary function in infix notation, and <span class="math inline">\(=\)</span> can be thought of as a predicate. First order logic requires an additional information regarding the proving machinism, that describes how to construct new valid well formed mathematical statements from existing ones. This proving machinism is in the form of <em>rules of inference</em> (Wikipedia The Free Encyclopedia, Rules of Inference, 2024). An example for a rule of inference commonly used in first order logic is Modus Ponen <span class="math display">\[(p) \land (p \to q) \implies q\]</span> Given that; if <span class="math inline">\(p\)</span> then <span class="math inline">\(q\)</span>, and we know that <span class="math inline">\(p\)</span> is true, then it follows that <span class="math inline">\(q\)</span> must be true.</p>
+<p>First order logic may not be required to represent some simple statements where we could only use Zeroth Order Logic also called propositional logic (Wikipedia The Free Encyclopedia, Propositional calculus, 2024). Similarly, first order logic might be inadequate to represent more complex mathematical statements where Second Order Logic or Higher Order Logic may be using (Wikipedia The Free Encyclopedia, Higher Order Logic, 2024). For example, there is no way in first order logic to identify the set of all cubes and tetrahedrons. But the existence of this set can be asserted in second-order logic as <span class="math display">\[\exists P. \forall x . (P(x) \leftrightarrow Cube(x) \lor Tet(x))\]</span></p>
+<p>Another representation is <strong>Type Theory</strong>. A Type Theory is the formal presentation of a specific type system (Wikipedia The Free Encyclopedia, Type Theory, 2024). Type theory is the academic study of type systems. Some type theories serve as alternatives to set theory as a foundation of mathematics. Two influential type theories that have been proposed as foundations are: - Typed λ-calculus of Alonzo Church (Helmut Brandl, 2024) - Intuitionistic type theory of Per Martin-Löf (Hall, J. G., ed.&nbsp;Intuitionistic Type Theory)</p>
+<p>Given a formal definition for what constitutes as a valid well formed mathematical statement with syntax and semantics to represent it, along with formal definition to construct proofs, we could develop computer programs to verify and generate proofs.</p>
+<p>Examples of Automated Theorem Provers that use Formal Logic are - Vampire (Vampire, 2024) - E (The E Theorem Prover, 2024) - Z3 Theorem Prover (GitHub, The Z3 Theorem Prover, 2024)</p>
+<p>Examples of Automated Theorem Provers that use Type Theory are - LEAN (Programming Language and Theorem Prover - LEAN, 2024) - Coq (The Coq Proof Assistant, 2024) LEAN and Coq are not fully automated provers, but can be used to verify proofs and works as an computer assistant for mathematicians using it.</p>
+</section>
+<section id="some-of-the-methods-for-proving" class="level2">
+<h2 class="anchored" data-anchor-id="some-of-the-methods-for-proving">Some of the Methods for Proving</h2>
+<section id="proof-by-refutation" class="level4">
+<h4 class="anchored" data-anchor-id="proof-by-refutation">Proof by Refutation</h4>
+<p>The negation of the statement trying to be proved is appended to the set of axioms along with necessary assumptions, then checking if the resulting set of formulas is unsatisfiable. If it is, then the statement being proved is a logical consequence of the axioms and the assumptions. A proof of unsatisfiability of a negation of formula is sometimes called a refutation of this formula, so such proofs are commonly referred to as proofs by refutation.</p>
+<p>The system appends the negation of the statement trying to be proved into the set of axioms, and applied rules of inferences on the axioms till it derives false. If we successfully end up deriving false, then the statement is indeed a consequence of the axioms.</p>
+<blockquote class="blockquote">
+<p>Vampire using proof by Refutation algorithm in its provers. (Kovács, L. &amp; Voronkov, A, 2013)</p>
+</blockquote>
+<p>Resolution is a rule of inference leading to a refutation-complete theorem-proving technique for sentences in zeroth and first order logic. For propositional logic, systematically applying the resolution rule acts as a decision procedure for formula unsatisfiability, solving the (complement of the) Boolean satisfiability problem. (Wikipedia The Free Encyclopedia, Resolution (logic), 2024) Resolution rule of inference is stated as <span class="math display">\[(p \lor q) \land (\lnot p \lor q) \implies q\]</span> SLD resolution (Selective Linear Definite clause resolution) is the basic inference rule used in logic programming. It is a refinement of resolution, which is both sound and refutation complete for Horn clauses. (Wikipedia The Free Encyclopedia, Selective Linear Definite clause resolution, 2024) #### Model Elimination The mnemonic label “model elimination” is used because the procedure seeks the truth-functionally contradictory statement associated with the procedures of creating new statements using the axioms by developing statements already “false” under some of the possible truth assignments over its atomic components. The procedure strives to form new statements which increase the percentage of the truth assignments yielding false for the statement. (Loveland, D.W. ,1968)</p>
+</section>
+<section id="method-of-analytic-tableau" class="level4">
+<h4 class="anchored" data-anchor-id="method-of-analytic-tableau">Method of Analytic Tableau</h4>
+<p>An analytic tableau is a tree structure computed for a logical formula, having at each node a sub-formula of the original formula to be proved or refuted. Computation constructs this tree and uses it to prove or refute the whole formula. The tableau method can also determine the satisfiability of finite sets of formulas of various logics. It is the most popular proof procedure for modal logics. A method of truth trees contains a fixed set of rules for producing trees from a given logical formula, or set of logical formulas. Those trees will have more formulas at each branch, and in some cases, a branch can come to contain both a formula and its negation, which is to say, a contradiction. In that case, the branch is said to close. If every branch in a tree closes, the tree itself is said to close. In virtue of the rules for construction of tableaux, a closed tree is a proof that the original formula, or set of formulas, used to construct it was itself self-contradictory, and therefore false. Conversely, a tableau can also prove that a logical formula is tautologous: if a formula is tautologous, its negation is a contradiction, so a tableau built from its negation will close (Colin Howson, 1997).</p>
+</section>
+<section id="quantifier-elimination" class="level4">
+<h4 class="anchored" data-anchor-id="quantifier-elimination">Quantifier Elimination</h4>
+<p>The idea behind quantifier elimination is to rewrite the statements containing quantifiers into statements that do not contain any quantifiers. It is easier to deal with statements without quantifiers, proving such statements is an easier task. Informally, a quantified statement “<span class="math inline">\(\forall x\)</span> such that <span class="math inline">\(…\)</span>” can be viewed as a question “When is there an <span class="math inline">\(x\)</span> such that <span class="math inline">\(…\)</span> ?”, and the statement without quantifiers can be viewed as the answer to that question (Wikipedia The Free Encyclopedia, Quantifier elimination, 2024). For example, the statement “quadratic polynomial has a real root if and only if its discriminant is non-negative” can be represented as <span class="math display">\[\exists x \in R . (a \neq 0 \land ax^2 +bx + c = 0)\]</span> using quantifiers, and <span class="math display">\[a \neq 0 \land b^2 -4ac &gt; 0\]</span> without any quantifiers.</p>
+<p>Similar idea can be applied when statements are represented in higher order logic. Statements in higher order logic can be transformed or reduced into simpler statements of first order logic. (Manfred Kerber. 1991)</p>
+</section>
+<section id="smt-solvers" class="level4">
+<h4 class="anchored" data-anchor-id="smt-solvers">SMT Solvers</h4>
+<p>There is substantial overlap between first-order automated theorem provers and SMT (# Satisfiability Modulo Theories) solvers and Boolean satisfiability problem. Generally, automated theorem provers focus on supporting full first-order logic with quantifiers, whereas SMT solvers focus more on supporting various theories (interpreted predicate symbols). Automated Theorem Provers excel at problems with lots of quantifiers, whereas SMT solvers do well on large problems without quantifiers. (Wikipedia The Free Encyclopedia, Satisfiability modulo theories, 2024)</p>
+</section>
+</section>
+<section id="discoveries-using-automated-theorem-provers" class="level2">
+<h2 class="anchored" data-anchor-id="discoveries-using-automated-theorem-provers">Discoveries using Automated Theorem Provers</h2>
+<section id="robbins-conjecture" class="level4">
+<h4 class="anchored" data-anchor-id="robbins-conjecture">Robbins Conjecture</h4>
+<p>Robbins algebra is an algebra containing a single binary operation, usually denoted by <span class="math inline">\(\lor\)</span> (or), and a single unary operation usually denoted by <span class="math inline">\(\lnot\)</span> (not) satisfying the following axioms: for all <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> &amp; <span class="math inline">\(c\)</span> - Associativity: <span class="math inline">\(a \lor (b \lor c) = (a \lor b) \lor c\)</span> - Commutativity: <span class="math inline">\(a \lor b = b \lor a\)</span> - Robbins equation: <span class="math inline">\(\lnot (\lnot (a \lor b) \lor \lnot (a \lor \lnot b)) = a\)</span> For many years, it was conjectured, but unproven, that all Robbins algebras are Boolean algebras. (Robbins Algebras Are Boolean, 2024) William McCune proved the conjecture in 1996, using the automated theorem prover EQP (EQP: Equational Theorem Prover, 2024).</p>
+</section>
+<section id="four-colour-theorem" class="level4">
+<h4 class="anchored" data-anchor-id="four-colour-theorem">Four Colour Theorem</h4>
+<p>The four colour theorem, or the four colour map theorem, states that no more than four colours are required to colour the regions of any map so that no two adjacent regions have the same colour. The theorem is a stronger version of the five color theorem, which can be shown using a significantly simpler argument. Although the weaker five color theorem was proven already in the 1800s, the four color theorem resisted until 1976 when it was proven by Kenneth Appel and Wolfgang Haken. The Appel-Haken proof proceeds by analyzing a very large number of reducible configurations. This was improved upon in 1997 by Robertson, Sanders, Seymour, and Thomas who have managed to decrease the number of such configurations to 633 – still an extremely long case analysis. In 2005, the theorem was verified by Georges Gonthier using a general-purpose theorem-proving software. (K. Appel. W. Haken, 1977)</p>
+</section>
+<section id="formalisation-of-fermats-last-theorem" class="level4">
+<h4 class="anchored" data-anchor-id="formalisation-of-fermats-last-theorem">Formalisation of Fermat’s Last Theorem</h4>
+<p>Fermat’s Last Theorem states that no three positive integers <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(c\)</span> satisfy the equation <span class="math inline">\(a^n + b^n = c^n\)</span> for any integer value of <span class="math inline">\(n\)</span> greater than 2. The cases <span class="math inline">\(n = 1\)</span> and <span class="math inline">\(n = 2\)</span> have been known since antiquity to have infinitely many solutions. The proposition was first stated as a theorem by Pierre de Fermat around 1637 in the margin of a copy of Arithmetica. After 358 years of effort by mathematicians, the first successful proof was released in 1994 by Andrew Wiles and formally published in 1995. The Fermat’s Last Theorem Project is a project to formalise the entire proof of Fermat’s Last Theorem. The project is an open project, where anyone could contribute. The LEAN programming language which is also a proof assist-er is used for this process of formalisation. The project is hosted on GitHub. The proof depends on multiple areas of mathematics and the current database of theorems in LEAN is inadequate. The project intends to formalise multiple branches of mathematics over next couple of years. The project will be funded by Engineering &amp; Physical Sciences Research Council for the first 5 years. (The Fermat’s Last Theorem Project, Lean community blog, 2024)</p>
+</section>
+</section>
+<section id="limitation" class="level2">
+<h2 class="anchored" data-anchor-id="limitation">Limitation</h2>
+<p><strong>Definitions</strong></p>
+<p><strong>Completeness:</strong> A formal theory (that is rules of inference and starting set of axioms) is said to be complete if we can prove or prove the negation of any statement that can be expressed in that system. <strong>Consistent:</strong> A formal theory is said to be consistent if it is free of contradictions. That is, the theory should not be able to prove a statement and also it negation. In such a system, it is possible to prove any and all statements to be true statement. <strong>Decidable:</strong> A formal theory is said to be decidable if there exists an algorithm that takes in a statement in the system as its input and returns true or false depending on if the statement is true under the theory or false.</p>
+<p>David Hilbert wanted to come up with a formal theory of mathematics that is complete, consistent and decidable, and could express entirety of mathematics. (Stanford Encyclopedia of Philosophy Archive, Hilbert’s Program, 2024)</p>
+<p>Gödel’s incompleteness theorems by Kurt Gödel, showed that any system complex enough to do arithmetic on natural numbers cannot be complete, consistent and decidable at the same time. (Kurt Gödel, 1931)</p>
+<p>The first incompleteness theorem states that no consistent system of axioms whose theorems can be listed by an effective procedure (i.e.&nbsp;an algorithm) is capable of proving all truths about the arithmetic of natural numbers. For any such consistent formal system, there will always be statements about natural numbers that are true, but that are unprovable within the system.</p>
+<p>The second incompleteness theorem, shows that no system can demonstrate its own consistency, i.e.&nbsp;a system cannot prove that it is itself free of contradictions.</p>
+<p>Alan Turing showed that having a decidable algorithm is equivalent to solving the halting problem. (Alan Turing, 1936)</p>
+</section>
+<section id="example-usage" class="level2">
+<h2 class="anchored" data-anchor-id="example-usage">Example Usage</h2>
+<section id="solving-a-exercise-problem-from-discrete-mathematics-textbook" class="level4">
+<h4 class="anchored" data-anchor-id="solving-a-exercise-problem-from-discrete-mathematics-textbook">Solving a exercise problem from Discrete Mathematics Textbook</h4>
+<p><strong>Problem Statement:</strong> Determine whether this argument is valid: If Superman were able and willing to prevent evil, he would do so. If Superman were unable to prevent evil, he would be impotent; if he were unwilling to prevent evil, he would be malevolent. Superman does not prevent evil. If Superman exists, he is neither impotent nor malevolent. Therefore, Superman does not exist. (Kenneth Rosen, 2011)</p>
+<p>The problem can be solved using zeroth order logic (propositional logic). We first need to represent the question in notations of formal logic.</p>
+<p>Let the following be constant symbols representing an atomic statement from the problem statement <span class="math inline">\(a\)</span>: “Superman is able to prevent evil” <span class="math inline">\(b\)</span>: “Superman is willing to prevent evil” <span class="math inline">\(c\)</span>: “Superman is impotent” <span class="math inline">\(d\)</span>: “Superman is malevolent” <span class="math inline">\(e\)</span>: “Superman prevents evil” <span class="math inline">\(f\)</span>: “Superman exists” Now, the assumptions or the axioms can be written as follows: <span class="math inline">\((a \land b) \to e\)</span>: “If Superman were able and willing to prevent evil, he would do so” <span class="math inline">\(\lnot e \to c\)</span>: “If Superman were unable to prevent evil, he would be impotent” <span class="math inline">\(\lnot b \to d\)</span>: “if he were unwilling to prevent evil, he would be malevolent” <span class="math inline">\(\lnot e\)</span>: “Superman does not prevent evil.” <span class="math inline">\(f \to (\lnot c \land \lnot d)\)</span>: “If Superman exists, he is neither impotent nor malevolent” And the conclusion would be: <span class="math inline">\(\lnot f\)</span>: “Superman does not exist”</p>
+<section id="solving-using-vampire" class="level5">
+<h5 class="anchored" data-anchor-id="solving-using-vampire">Solving using Vampire</h5>
+<p>Vampire uses TPTP (TPTP, 2024) syntax to represent mathematical statements. The above mathematical statements will be written as:</p>
+<pre><code>fof(id1, axiom,
+(a &amp; b) =&gt; e).
+
+fof(id2, axiom,
+~e =&gt; c).
+
+fof(id3, axiom,
+~b =&gt; d).
+
+fof(id4, axiom,
+~e).
+
+fof(id5, axiom,
+f =&gt; (~c &amp; ~d)).
+
+fof(res, conjecture, ~f).</code></pre>
+<p>And running Vampire on the above</p>
+<pre><code>...
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for superman
+% SZS output start Proof for superman
+2. ~e =&gt; c [input]
+4. ~e [input]
+5. f =&gt; (~d &amp; ~c) [input]
+6. ~f [input]
+7. ~~f [negated conjecture 6]
+8. f [flattening 7]
+11. f =&gt; ~c [pure predicate removal 5]
+12. c | e [ennf transformation 2]
+13. ~c | ~f [ennf transformation 11]
+14. c | e [cnf transformation 12]
+15. ~e [cnf transformation 4]
+16. ~c | ~f [cnf transformation 13]
+17. f [cnf transformation 8]
+19. 1 &lt;=&gt; e [avatar definition]
+23. 2 &lt;=&gt; c [avatar definition]
+26. 1 | 2 [avatar split clause 14,23,19]
+27. ~1 [avatar split clause 15,19]
+29. 3 &lt;=&gt; f [avatar definition]
+32. ~3 | ~2 [avatar split clause 16,23,29]
+33. 3 [avatar split clause 17,29]
+34. $false [avatar sat refutation 26,27,32,33]
+% SZS output end Proof for superman
+...</code></pre>
+</section>
+<section id="solving-using-logic" class="level5">
+<h5 class="anchored" data-anchor-id="solving-using-logic">Solving using logic</h5>
+<p>Logic is a python library written by Vipul Cariappa (GitHub, Logic, 2024), that uses rules of inference to construct the proof. Logic presently only works with zeroth order logic, therefore can be applied in this case. But the algorithm used is not complete.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> logic <span class="im">import</span> Proposition, IMPLY, prove</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating propositional variables</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> Proposition(<span class="st">"a"</span>) <span class="co"># "Superman is able to prevent evil"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> Proposition(<span class="st">"b"</span>) <span class="co"># "Superman is willing to prevent evil"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> Proposition(<span class="st">"c"</span>) <span class="co"># "Superman is impotent"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> Proposition(<span class="st">"d"</span>) <span class="co"># "Superman is malevolent"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> Proposition(<span class="st">"e"</span>) <span class="co"># "Superman prevents evil"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> Proposition(<span class="st">"f"</span>) <span class="co"># "Superman exists"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># encoding assumptions</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>assumptions <span class="op">=</span> [</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    IMPLY(a <span class="op">&amp;</span> b, e),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    IMPLY(<span class="op">~</span>e, c),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    IMPLY(<span class="op">~</span>b, d),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">~</span>e,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    IMPLY(f, <span class="op">~</span>c <span class="op">&amp;</span> <span class="op">~</span>d),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># encoding conclusion</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>conclusion <span class="op">=</span> <span class="op">~</span>f</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># printing assumptions</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Assumptions:"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> assumptions:</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co"># printing conclusion</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Conclusion: </span><span class="sc">{</span>conclusion<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># generating proof</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>proof, truth <span class="op">=</span> prove(assumptions, conclusion)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> truth <span class="op">==</span> <span class="va">True</span> <span class="co"># checking if it could be proved</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co"># printing proof</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(proof)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Output:</p>
+<pre><code>Assumptions:
+(((a ∧ b)) → (e))
+((¬ (e)) → (c))
+((¬ (b)) → (d))
+¬ (e)
+((f) → ((¬ (c) ∧ ¬ (d))))
+Conclusion: ¬ (f)
+                           c                 Modus Ponens {((¬ (e)) → (c)), ¬ (e)}    
+                   ¬ (¬ (c))                   Not Of Not {c}                         
+     (¬ (¬ (c)) ∨ ¬ (¬ (d)))                     Addition {¬ (¬ (c)), ¬ (¬ (d))}      
+         ¬ ((¬ (c) ∧ ¬ (d)))              De'Morgen's Law {(¬ (¬ (c)) ∨ ¬ (¬ (d)))}   
+                       ¬ (f)                Modus Tollens {((f) → ((¬ (c) ∧ ¬ (d)))), ¬ ((¬ (c) ∧ ¬ (d)))}</code></pre>
+</section>
+</section>
+<section id="using-predicates-in-vampire" class="level4">
+<h4 class="anchored" data-anchor-id="using-predicates-in-vampire">Using Predicates in Vampire</h4>
+<p>Encoding arithmetic over natural number using Peano Axioms (Wikipedia The Free Encyclopedia, Peano Axioms, 2024) to prove <span class="math inline">\(2 = 1 + 1\)</span></p>
+<pre><code>fof(
+    identity_add,
+    axiom,
+    ! [X] : add(X, zero) = X
+).
+
+fof(
+    identity_mul,
+    axiom,
+    ! [X] : mul(X, zero) = zero
+).
+
+fof(
+    op_add,
+    axiom,
+    ! [X, Y] : add(X, succ(Y)) = succ(add(X, Y))
+).
+
+fof(
+    op_mul,
+    axiom,
+    ! [X, Y] : mul(X, succ(Y)) = add(X, mul(X, Y))
+).
+
+fof(
+    successor,
+    axiom,
+    ! [X, Y] : (succ(X) = succ(Y)) =&gt; (X = Y)
+).
+
+fof(
+    successor_neq_zero,
+    axiom,
+    ! [X] : ~(succ(X) = zero)
+).
+
+fof(
+    two_eqs_one_plus_one,
+    conjecture,
+    succ(succ(zero)) = add(succ(zero), succ(zero))
+).</code></pre>
+<p>Output</p>
+<pre><code>...
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for peano
+% SZS output start Proof for peano
+1. ! [X0] : add(X0,zero) = X0 [input]
+3. ! [X0,X1] : add(X0,succ(X1)) = succ(add(X0,X1)) [input]
+7. succ(succ(zero)) = add(succ(zero),succ(zero)) [input]
+8. ~succ(succ(zero)) = add(succ(zero),succ(zero)) [negated conjecture 7]
+11. succ(succ(zero)) != add(succ(zero),succ(zero)) [flattening 8]
+16. add(X0,zero) = X0 [cnf transformation 1]
+18. add(X0,succ(X1)) = succ(add(X0,X1)) [cnf transformation 3]
+22. succ(succ(zero)) != add(succ(zero),succ(zero)) [cnf transformation 11]
+31. succ(succ(zero)) != succ(add(succ(zero),zero)) [superposition 22,18]
+32. succ(succ(zero)) != succ(succ(zero)) [forward demodulation 31,16]
+33. $false [trivial inequality removal 32]
+% SZS output end Proof for peano
+...</code></pre>
+<section id="using-lean-to-prove-sum-of-two-even-numbers-is-even" class="level5">
+<h5 class="anchored" data-anchor-id="using-lean-to-prove-sum-of-two-even-numbers-is-even">Using LEAN to prove sum of two even numbers is even</h5>
+<p>LEAN is based on Type Theory. LEAN does not provide a proof, but is a interactive proof assistant, that can detect errors in proof and can verify the proof. If the LEAN compiler does not give any error it means that the proof is a valid proof. The proof of sum of two even numbers is even in LEAN looks as follows:</p>
+<pre class="lean"><code>def is_even (a : Nat) := ∃ b, a = 2 * b
+
+theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+  Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =&gt;
+  Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =&gt;
+    Exists.intro (w1 + w2)
+      (calc a + b
+        _ = 2 * w1 + 2 * w2 := by rw [hw1, hw2]
+        _ = 2 * (w1 + w2)   := by rw [Nat.mul_add])))</code></pre>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Automated theorem provers have significantly advanced the landscape of mathematical proof verification and generation. By leveraging formal logic, type theory, and various inference techniques, automated theorem provers offer robust tools for tackling complex mathematical problems. The development of systems like Vampire, E, Z3, LEAN, and Coq exemplifies the diverse approaches and strengths within the field. Notable achievements, such as the resolution of the Robbins Conjecture and the formal verification of the Four Colour Theorem and formalisation of Fermat’s Last Theorem, highlight the practical and theoretical impact of these technologies. As automated theorem provers continue to evolve, their integration with modern computational frameworks promises to further enhance their efficiency and applicability, paving the way for new discoveries and the formalisation of more complex mathematical theories.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Wikipedia The Free Encyclopedia, First Order Logic, viewed 17th July 2024, (https://en.wikipedia.org/wiki/First-order_logic)</li>
+<li>Wikipedia The Free Encyclopedia, Propositional calculus, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Propositional_logic)</li>
+<li>Wikipedia The Free Encyclopedia, Higher-Order Logic, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Higher-order_logic)</li>
+<li>Wikipedia The Free Encyclopedia, Type Theory, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Type_theory)</li>
+<li>Helmut Brandl, 2024, Typed Lambda Calculus / Calculus of Constructions</li>
+<li>Hall, J. G., ed.&nbsp;Intuitionistic Type Theory: Notes by Giovanni Sambin of a series of lectures given in Padova, June 1980. By Per Martin-Löf (1980). Digital Edition (2021).</li>
+<li>Wikipedia The Free Encyclopedia, Rules of Inference, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Rule_of_inference)</li>
+<li>Vampire, viewed 17th July 2024, (https://vprover.github.io/index.html)</li>
+<li>The E Theorem Prover, viewed 17th July 2024, (https://wwwlehre.dhbw-stuttgart.de/~sschulz/E/E.html)</li>
+<li>GitHub, The Z3 Theorem Prover, viewed 17th July 2024, (https://github.com/Z3Prover/z3)</li>
+<li>Programming Language and Theorem Prover - LEAN, viewed 17th July 2024, (https://lean-lang.org/)</li>
+<li>The Coq Proof Assistant, viewed 17th July 2024, (https://coq.inria.fr/)</li>
+<li>Kovács, L. &amp; Voronkov, A. (2013). First-Order Theorem Proving and Vampire . In: Sharygina, N., Veith, H. (eds) Computer Aided Verification. CAV 2013. Lecture Notes in Computer Science, vol 8044. Springer, Berlin, Heidelberg, (https://doi.org/10.1007/978-3-642-39799-8_1)</li>
+<li>Wikipedia The Free Encyclopedia, Resolution (logic), viewed 17th July 2024, (https://en.wikipedia.org/wiki/First-order_resolution)</li>
+<li>Loveland, D.W. (1968). Mechanical Theorem-Proving by Model Elimination. In: Siekmann, J.H., Wrightson, G. (eds) Automation of Reasoning. Symbolic Computation. Springer, Berlin, Heidelberg, (https://doi.org/10.1007/978-3-642-81955-1_8)</li>
+<li>Colin Howson, Logic with Trees, An Introduction to Symbolic Logic, 1997 http://ndl.ethernet.edu.et/bitstream/123456789/77275/1/29.pdf</li>
+<li>Wikipedia The Free Encyclopedia, Quantifier elimination, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Quantifier_elimination)</li>
+<li>Manfred Kerber. 1991. How to prove higher order theorems in first order logic. In Proceedings of the 12th international joint conference on Artificial intelligence - Volume 1 (IJCAI’91). Morgan Kaufmann Publishers Inc., San Francisco, CA, USA, 137–142.</li>
+<li>Wikipedia The Free Encyclopedia, Satisfiability modulo theories, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Satisfiability_modulo_theories)</li>
+<li>Wikipedia The Free Encyclopedia, Selective Linear Definite clause resolution, viewed 17th July 2024, (https://en.wikipedia.org/wiki/SLD_resolution)</li>
+<li>The Fermat’s Last Theorem Project, Lean community blog, viewed 17th July 2024, (https://leanprover-community.github.io/blog/posts/FLT-announcement/)</li>
+<li>EQP: Equational Theorem Prover, viewed 17th July 2024, (https://www.cs.unm.edu/~mccune/eqp/)</li>
+<li>Robbins Algebras Are Boolean, viewed 17th July 2024, (https://www.cs.unm.edu/~mccune/papers/robbins/)</li>
+<li>K. Appel. W. Haken. “Every planar map is four colorable. Part I: Discharging.” Illinois J. Math. 21 (3) 429 - 490, September 1977. https://doi.org/10.1215/ijm/1256049011</li>
+<li>Kenneth Rosen, Discrete Mathematics and Its Applications, McGraw-Hill Education, 2011</li>
+<li>TPTP, viewed 17th July 2024, (https://www.tptp.org/)</li>
+<li>GitHub, Logic, Vipul-Cariappa, viewed 17th July 2024, (https://github.com/Vipul-Cariappa/logic)</li>
+<li>Wikipedia The Free Encyclopedia, Peano Axioms, viewed 17th July 2024, (https://en.wikipedia.org/wiki/Peano_axioms)</li>
+<li>Alan Turing, “On Computable Numbers, With An Application To The Entscheidungsproblem”</li>
+<li>Stanford Encyclopedia of Philosophy Archive, Hilbert’s Program, viewed 17th July 2024, (https://plato.stanford.edu/archives/spr2023/entries/hilbert-program)</li>
+<li>Kurt Gödel, On Formally Undecidable Propositions of Principia Mathematica and Related Systems I</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
