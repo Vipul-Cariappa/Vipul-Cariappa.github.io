@@ -12,6 +12,8 @@ website:
       - href: /projects/
         text: Projects
   favicon: /assets/images/favicon.ico
+  twitter-card: true
+  open-graph: true
 
 format:
   html:
