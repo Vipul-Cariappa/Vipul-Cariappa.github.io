@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: out
 
 website:
   title: "Vipul Cariappa"
@@ -18,3 +19,6 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+
+execute:
+  freeze: auto
