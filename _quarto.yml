@@ -13,12 +13,17 @@ website:
         text: Projects
       - href: /assets/My-Resume.pdf
         text: Résumé
+    right:
+      - icon: rss
+        href: index.xml
   favicon: /assets/images/favicon.ico
   open-graph:
     locale: en_IN
   cookie-consent: true
   google-analytics:
     tracking-id: "G-6VG3WD4HTJ"
+  site-url: https://vipulcariappa.xyz
+  description: "Vipul Cariappa's Personal Website"
 
 format:
   html:
