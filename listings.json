@@ -17,5 +17,11 @@
       "/blogs/posts/GSoC'23-GNU-Octave-First-Week/index.html",
       "/blogs/posts/GSoC'23-GNU-Octave-My-Project/index.html"
     ]
+  },
+  {
+    "listing": "/presentations/index.html",
+    "items": [
+      "/presentations/talks/how-to-interoperate-with-cpp/index.html"
+    ]
   }
 ]
