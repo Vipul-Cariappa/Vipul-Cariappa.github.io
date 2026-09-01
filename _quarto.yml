@@ -9,13 +9,15 @@ website:
         text: Home
       - href: /blogs/
         text: Blog
+      - href: /presentations/
+        text: Presentations
       - href: /projects/
         text: Projects
       - href: /assets/My-Resume.pdf
         text: Résumé
-    right:
-      - icon: rss
-        href: index.xml
+    # right:
+    #   - icon: rss
+    #     href: /blogs/index.xml
   favicon: /assets/images/favicon.ico
   open-graph:
     locale: en_IN

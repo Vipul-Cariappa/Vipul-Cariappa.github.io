@@ -1,0 +1,13 @@
+# Presentations that are plain PDFs rather than rendered Quarto documents.
+# Put the PDF in a folder under `talks/`, then add an entry here.
+# `path` is relative to the site root.
+#
+# - title: "Talk Title"
+#   author: "Vipul Cariappa"
+#   date: "2026-01-01"
+#   categories: [Talk]
+#   image: /assets/images/vipul-cartoon.jpeg
+#   description: |
+#     One paragraph about the talk.
+#   path: /presentations/talks/my-talk/slides.pdf
+[]
