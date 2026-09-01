@@ -1,0 +1,21 @@
+---
+title: "Presentations"
+open-graph:
+  description: |
+    Talks and presentations I have given.
+  # image: /assets/images/vipul-cartoon.jpeg
+listing:
+  contents:
+    - talks
+    # Quarto quirk: directory/glob entries above resolve relative to this file,
+    # but a .yml entry resolves relative to the PROJECT ROOT. Writing it as
+    # "pdfs.yml" here silently lists nothing.
+    - presentations/pdfs.yml
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: true
+  filter-ui: true
+page-layout: full
+title-block-banner: true
+---

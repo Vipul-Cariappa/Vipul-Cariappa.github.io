@@ -1,0 +1,1048 @@
+---
+title: "How to interoperate with C++?"
+subtitle: "By using the Compiler as a Service"
+author: "Vipul Cariappa"
+institute: "FPLaunchpad, IIT Madras"
+date: 2026-09-05
+date-format: "DD MMMM YYYY"
+categories: ["LLVM Social Bangalore", "CppJIT", "Python", "C++"]
+image: /assets/images/cpp-python.png
+description: |
+  **Presented at [LLVM Social Bangalore](https://www.meetup.com/bangalore-compilers-meetup-group/events/316291880/).**
+
+  This talk leverages Clang to build simple C/C++ introspection layers in C, extending them for invocation from Python. We build an automatic dispatch mechanism to generate Python bindings on the fly, creating a simple, dynamic interoperability library.
+  The second part of the talk covers CppJIT, a new Python library built on the principles established in Part 1. We demonstrate CppJIT's ability to interoperate not only with C++, but also with CUDA, its integration with Numba workflows, and its capability to run on WASM.
+format:
+  revealjs:
+    theme: simple
+    slide-number: c/t
+    show-slide-number: all
+    progress: true
+    history: true
+    hash-type: number
+    transition: none
+    width: 1280
+    height: 760
+    code-overflow: wrap
+    code-line-numbers: true
+    highlight-style: github
+    footer: "How to interoperate with C++? | LLVM Social Bangalore"
+    preview-links: auto
+    logo: /assets/logos/footer-logos.png
+    incremental: true
+title-slide-attributes:
+  data-background-image: /assets/logos/title-logos.png
+  data-background-size: contain
+  data-background-position: center
+---
+
+## Where we are going
+
+- **Problem/Motivation:** Why do we want to interoperate with C/C++? Why is this difficult?
+- **Build minimal interop for Python:** Use Clang to build a working C++ introspection and execution layer. In C. Then drive it from Python.
+- **Production system; CppJIT:** Automatic Python bindings, no manual wrappers, no interface files. 
+- **Demos:** CUDA, Numba, & the browser.
+
+# Motivation
+
+Why do you want to interoperate with C/C++?
+
+- **Speed:** Scripting languages are slow. C/C++ is where the actual compute happens.
+
+- **Rapid iteration:** Mixing in a scripting language gives fast prototyping. Try an idea in Python, without a compile step, then drop into C++ only where it matters.
+
+- **Reuse:** Decades of existing C/C++ libraries. Nobody wants to rewrite BLAS, or ROOT, or Thrust, to use it from another language.
+
+# The Problem
+
+## C++ does not want to be bound
+
+Every language wants to call C++. Almost nobody enjoys making it happen.
+
+- **SWIG** — you write interface files, then regenerate.
+- **pybind11, nanobind** — you write C++ to describe your C++, then recompile.
+- **ctypes, cffi** — fine for C. C++ has name mangling, overloads, templates.
+- All of them are **ahead-of-time**. They must decide, before you run anything,
+  exactly which types and instantiations exist.
+
+## The part that actually hurts
+
+\
+
+```cpp
+template <typename T>
+class Matrix { /* ... */ };
+```
+
+\
+
+How many bindings does this need?
+
+**Unbounded.** `Matrix<float>`, `Matrix<double>`, `Matrix<std::complex<T>>`, `Matrix<MyType>` — the set is open, and it depends on code the binding author has never seen.
+
+A template is not a type. It is a *function from types to types*, and the only
+thing in the world that can evaluate it is a C++ compiler.
+
+## So keep the compiler around
+
+- Traditional model: compiler runs, produces a binary, **exits**. All knowledge of types, overloads and templates dies with it.
+- What if it didn't exit?
+- Keep a live `clang::Interpreter`. Ask it questions at runtime: *what is this type? what are its methods? instantiate this template for me. give me the address of that function.*
+- That is **Compiler as a Service**.
+
+. . .
+
+The binding layer stops being generated code. It becomes a **query**.
+
+# Building a minimal InterOp Engine
+
+Clang as a library, from `clang::Interpreter` up to Python proxies
+
+## Clang is a library, not just a compiler
+
+\
+
+- Clang is a compiler which supports C, C++, Objective-C, and Objective-C++ programming languages, as well as the OpenMP, OpenCL, RenderScript, CUDA, SYCL, and HIP frameworks.
+- Just like LLVM, Clang is built by a set of reusable components and can be used as a library.
+
+. . .
+
+\
+
+```{mermaid}
+%%| fig-width: 11
+flowchart LR
+  subgraph Frontend
+    L[Lex] --> P[Parse] --> S[Sema]
+  end
+  subgraph Backend
+    CG[CodeGen] --> IR[LLVM IR] --> MC[MC / ORC JIT]
+  end
+  SRC[C / C++ / CUDA] --> L
+  S -- AST --> CG
+```
+
+## A C++ REPL in about twenty lines
+
+```{.cpp code-line-numbers="|1-3|5-7|9-15"}
+clang::IncrementalCompilerBuilder CB;
+CB.SetCompilerArgs({"-resource-dir", ResourceDir.c_str(), "-std=c++20"});
+// pass `-xc` instead, and you have a C REPL
+
+auto CI     = ExitOnErr(CB.CreateCpp());
+auto Interp = ExitOnErr(clang::Interpreter::create(std::move(CI)));
+
+llvm::LineEditor LE("llvmBlr-repl");
+while (std::optional<std::string> Line = LE.readLine()) {
+  if (*Line == "%quit")
+    break;
+  if (auto Err = Interp->ParseAndExecute(*Line))
+    llvm::logAllUnhandledErrors(std::move(Err), llvm::errs(), "error: ");
+}
+```
+
+`ParseAndExecute` is the whole interface: it adds one PTU and runs it.
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 1 — a C++ REPL
+
+```bash
+./build/bin/ex1
+```
+:::
+
+::: {.notes}
+Type, in order:
+
+    int x = 41;
+    x + 1
+    #include <vector>
+    std::vector<int> v = {1,2,3};
+    v.size()
+    int sq(int n) { return n * n; }
+    sq(12)
+
+Points to make while typing: `x + 1` prints `(int) 42` — the value came back
+out of the JIT. Redefining `sq` works. A syntax error does not kill the
+session. `%quit` to exit.
+:::
+
+<!--
+## (Optional) Incremental compilation in Clang
+
+::: {.columns}
+::: {.column width="55%"}
+- A TU need not be built in one shot. Split it into a sequence of
+  **partial translation units** (PTUs).
+- Each PTU is parsed, Sema'd, lowered and JIT'd on its own — then appended to
+  an ever-growing TU.
+- A later PTU can **extend** an earlier one: that is how a template gets
+  instantiated at input 40 over a class defined at input 3.
+- Failure is recoverable: a bad PTU is unwound, and the session survives.
+:::
+
+::: {.column width="45%"}
+```{mermaid}
+flowchart TB
+  A["PTU 0 — input 0"] --> B["PTU 1 — input 1"]
+  B --> C["..."]
+  C --> D["PTU N — input N"]
+```
+One process. One growing AST. One JIT session.
+:::
+:::
+-->
+
+## Getting values back out: `clang::Value`
+
+. . .
+
+Running code is half the job. You need the **result**, typed.
+
+```{.cpp code-line-numbers="|1-4|6-9|10-11"}
+clang::Value V;
+Interp->ParseAndExecute("auto x = Math::pow2<int>(7); x", &V);
+if (V.getKind() == clang::Value::K_Int)
+  printf("%d\n", V.getInt());          // 49
+
+// or skip the interpreter entirely and call the JIT'd code directly
+auto Addr  = ExitOnErr(Interp->getSymbolAddress("sq")); //mangled name
+auto sqPtr = Addr.toPtr<int(*)(int)>();
+printf("%d\n", sqPtr(13));             // 169
+auto xPtr  = ExitOnErr(Interp->getSymbolAddress("x"));
+assert(*xPtr.toPtr<int*>() == 49);
+```
+
+- `clang::Value` is ref-counted, small-buffer-optimised, and knows its own
+  C++ type.
+- `getSymbolAddress` is the bridge back to **compiled** code — an ordinary pointer.
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 2 — clang::Value and getSymbolAddress
+
+```bash
+./build/bin/ex2
+```
+:::
+
+## The building blocks of a CaaS
+
+Five C functions. That is the entire surface we need.
+
+```{.c code-line-numbers="|1-2|4-5|7-8|10-11|13-15"}
+/// Process C++ code — adds a PTU.
+void Clang_Parse(const char *Code);
+
+/// Look an entity up by name, optionally within a scope.
+Decl_t Clang_LookupName(const char *Name, Decl_t Context);
+
+/// In-memory address of the JIT'd function for a declaration.
+FnAddr_t Clang_GetFunctionAddress(Decl_t D);
+
+/// Allocate storage sized from the declaration, and construct into it.
+void *Clang_CreateObject(Decl_t RecordDecl);
+
+/// Instantiate a member template, on demand, for the given arguments.
+Decl_t Clang_InstantiateTemplate(Decl_t D, const char *Name,
+                                 const char *Args);
+```
+
+. . .
+
+Note the types: `void*` and `char*`. No Clang types leak out. This header is
+callable from C, Python, Julia, or anything with an FFI.
+
+## The whole demo; end-to-end { .smaller }
+
+::: {.columns}
+::: {.column width="54%"}
+`main()`, driving it with the only five C functions with out any Clang headers:
+
+```{.c code-line-numbers="|1|3-5|7-8|10-13|15-16|18-19|"}
+Clang_Parse(Code);
+
+Decl_t TemplatedClass = Clang_LookupName("B", 0);
+Decl_t TypeA = Clang_LookupName("A", 0);
+Decl_t TypeB = Clang_LookupName("B", 0);
+
+void *ObjA = Clang_CreateObject(TypeA);
+void *ObjB = Clang_CreateObject(TypeB);
+
+Decl_t CallmeOnA =
+    Clang_InstantiateTemplate(TemplatedClass, "callme", "A");
+Decl_t CallmeOnB =
+    Clang_InstantiateTemplate(TemplatedClass, "callme", "B");
+
+fn_def CallmeOnAPtr = (fn_def)Clang_GetFunctionAddress(CallmeOnA);
+fn_def CallmeOnBPtr = (fn_def)Clang_GetFunctionAddress(CallmeOnB);
+
+CallmeOnAPtr(ObjA);
+CallmeOnBPtr(ObjB);
+```
+:::
+::: {.column width="46%"}
+The code that gets **JIT-compiled**:
+
+```cpp
+extern "C" int printf(const char*, ...);
+
+class A {};
+class B : A {
+public:
+  template <typename T>
+  static void callme(T*) {
+    printf("Instantiated with [%s]\n",
+           typeid(T).name());
+  }
+};
+```
+:::
+:::
+
+Five function calls, and `B::callme` is instantiated **twice**, once over
+`A` & once over `B`, with no template argument written anywhere in the
+program's own source.
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 3 — instantiating and calling C++ templates from C
+
+```bash
+./build/bin/ex3
+```
+:::
+
+<!-- 
+## (Optional) How on-demand instantiation actually works
+
+The trick is smaller than people expect — **synthesise C++ and let Sema do it**.
+
+```{.cpp code-line-numbers="|1-6|8-9|11-13"}
+// Build the source text:  auto _t0 = &B::callme<A>;
+std::stringstream ss;
+ss << "auto _t" << counter++ << " = &" << ND->getNameAsString()
+   << "::" << Name;
+if (!ArgList.empty())
+  ss << '<' << Args << '>';
+ss << ';';
+
+auto PTU = &llvm::cantFail(Interp->Parse(ss.str()));
+llvm::cantFail(Interp->Execute(*PTU));
+
+// Dig the instantiated FunctionDecl back out of the AST we just made
+VarDecl *VD = static_cast<VarDecl *>(*PTU->TUPart->decls_begin());
+auto *UO = llvm::cast<UnaryOperator>(VD->getInit());
+return llvm::cast<DeclRefExpr>(UO->getSubExpr())->getDecl();
+```
+
+Taking the address of a specialisation forces the instantiation. We then read
+the `Decl` straight back out of the PTU we just created.
+
+::: {.notes}
+Someone always asks why not call `Sema::DeduceTemplateArguments` directly. The
+honest answer: you can, and CppInterOp does more of that, but you then own
+overload resolution and diagnostics yourself. Round-tripping through source is
+a remarkably robust shortcut for a tutorial.
+:::
+
+## (Optional) Allocating an object without knowing its type
+
+```{.cpp code-line-numbers="|1-6|8-13"}
+// Clang 23: TypeDecl::getTypeForDecl() asserts on TagDecl, so tag types
+// have to be built through ASTContext.
+QualType QT = isa<TagDecl>(TD) ? C.getCanonicalTagType(cast<TagDecl>(TD))
+                               : C.getTypeDeclType(TD);
+size_t size = C.getTypeSize(QT) / C.getCharWidth();  // getTypeSize is in bits
+void *loc = malloc(size);
+
+// Then let the interpreter run the constructor into our storage:
+//   auto _v0 = new ((void*)0x55f3...) ClassName();
+std::stringstream ss;
+ss << "auto _v" << counter++ << " = new ((void*)" << loc << ")"
+   << Name << "();";
+Interp->ParseAndExecute(ss.str());
+```
+
+Placement-new, with the address baked into the generated source as a literal.
+
+::: {.notes}
+The `getTypeSize` returning *bits* thing is a classic. And the Clang 23 assert
+on `getTypeForDecl` for tag types is new — I had to fix that in this tutorial
+to get it running against LLVM 23.
+:::
+-->
+
+## Teaching Python to speak C++
+
+Three small classes over the same C API:
+
+- **`InteropLayerWrapper`:** `ctypes` bindings for the five functions.
+- **`CallCppFunc:`** wraps a raw address in a `ctypes.CFUNCTYPE` and calls it.
+- **`TemplateWrapper`:** implements `__getitem__`, so `obj.callme["A"]`
+  becomes an explicit instantiation, and `__call__`, to `obj.callme(a)`.
+
+. . .
+
+The square bracket is the whole user-facing idea: Python's `__getitem__` is
+spelled the same way as C++'s template argument list.
+
+```python
+b.callme["A"](a)          # explicit:  B::callme<A>
+b.callme["B"](b)          # explicit:  B::callme<B>
+```
+
+## `InteropLayerWrapper`
+
+```python
+libInterop = ctypes.CDLL("/path/to/library", mode=ctypes.RTLD_GLOBAL)
+
+class InteropLayerWrapper:
+    _construct = libInterop.Clang_CreateObject
+    _construct.restype = ctypes.c_void_p
+    _construct.argtypes = [ctypes.c_size_t]
+
+    @classmethod
+    def construct(cls, cpptype):
+        return cls._construct(cpptype)
+    
+    ... # use ctype to wrap other API functions
+```
+
+- `ctypes` is part of standard Python library, used to interoperate with C.
+- One `ctypes` binding per C function — the whole interop layer is this thin.
+- The `ctypes` wrapped five C API is what everything else is built on.
+
+## `CallCppFunc`
+
+```python
+class CallCppFunc:
+  def __init__(self, func):
+    proto = ctypes.CFUNCTYPE(None, ctypes.c_void_p)
+    self._funcptr = proto(InteropLayerWrapper.get_funcptr(func)) # Clang_GetFunctionAddress
+
+  def __call__(self, *args):
+    return self._funcptr(args[0].cppobj)
+```
+
+`Clang_GetFunctionAddress` hands back a raw integer; `ctypes.CFUNCTYPE` is
+what turns that address into something Python can actually call.
+
+## `TemplateWrapper`
+
+```python
+class TemplateWrapper:
+  def __getitem__(self, *args):
+    # obj.callme["A"]  ->  explicit instantiation
+    return InteropLayerWrapper.get_template(self._scope,
+                                            self._name,
+                                            tmpl_args=args)
+
+  def __call__(self, *args):
+    # obj.callme(a)  ->  instantiate from the argument types instead
+    ol = InteropLayerWrapper.get_template(self._scope,
+                                          self._name,
+                                          tpargs=[type(a) for a in args])
+    return ol(*args)
+```
+
+Square brackets and template angle brackets are the same idea in two
+languages: `__getitem__` looks up an instantiation by name, `__call__`
+deduces it from the arguments instead.
+
+## Python types backed by C++ scopes
+
+```{.python code-line-numbers="|1-5|7-10|12-16"}
+def cpp_allocate(proxy):
+    pyobj = object.__new__(proxy)
+    proxy.__init__(pyobj)
+    pyobj.cppobj = InteropLayerWrapper.construct(proxy.handle)   # Clang_CreateObject
+    return pyobj
+
+CppA = type("A", (), {
+    "handle":  InteropLayerWrapper.get_scope("A"),               # Clang_LookupName
+    "__new__": cpp_allocate,
+})
+
+CppB = type("B", (CppA,), {
+    "handle":  InteropLayerWrapper.get_scope("B"),
+    "__new__": cpp_allocate,
+    "callme":  TemplateWrapper(InteropLayerWrapper.get_scope("B"), "callme"),
+})
+```
+
+Python's `type()` builds the proxy class at runtime.
+
+C++ inheritance is mapped onto Python inheritance by passing `CppA` as a base.
+
+::: {.notes}
+This is where the audience should see the shape of cppyy/CppJIT emerging. The
+real implementations use a metaclass and lazy attribute lookup rather than
+building the dict eagerly, but the idea is identical.
+:::
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 4 — Python driving C++ templates
+
+```bash
+python3 examples/ex3/teach_python_cpp.py
+```
+:::
+
+::: {.notes}
+Walk the file top to bottom before running, then run it. Call out that
+`libex3-lib.so` is loaded with plain `ctypes.CDLL` — Python has no idea Clang
+is involved.
+
+One gotcha worth mentioning if the output looks odd: the JIT resolves `stdout`
+to its own `FILE*`, so you have to `fflush(NULL)` to interleave C++ and Python
+output correctly.
+:::
+
+## What we have, and what is missing
+
+::: {.columns}
+::: {.column width="50%"}
+### Working
+- Look up types and functions
+- Instantiate templates on demand
+- Construct objects
+- Call JIT'd code at full speed
+:::
+::: {.column width="50%"}
+### Missing
+- Overload resolution
+- Object lifetime / ownership
+- Exceptions across the boundary
+- Inheritance *from* Python
+- Standard library niceties
+- Anything resembling performance work
+:::
+:::
+
+. . .
+
+Roughly 200 lines got us the left column. The right column is the next decade —
+and it already exists, as **CppInterOp** and **CppJIT**.
+
+# Production ready System
+
+CppInterOp, CppJIT, and what falls out for free
+
+## CppInterOp
+
+::: {.columns}
+::: {.column width="55%"}
+- A **stable, minimal API over Clang/LLVM internals** — the productised version
+  of the header we just wrote.
+- On-demand reflection, template instantiation, and JIT execution.
+- Embeds Clang and LLVM as libraries in a backward-compatible way, so
+  downstream tools do not track Clang's ABI.
+- Also ships a **C API** and a **dispatch-table** entry point, for consumers
+  that cannot link the C++ ABI at all.
+:::
+::: {.column width="45%"}
+\
+
+\
+
+```{mermaid}
+flowchart TB
+  I[clang-repl] <--> C[CppInterOp]
+  C <--> P[Python / CppJIT]
+  C <--> J[jank - Clojure]
+  C <--> JL[CppInterOp.jl]
+  C <--> X[xeus-cpp]
+```
+
+![](/assets/logos/llvm.png){height=55px} ![](/assets/logos/python.png){height=55px} ![](/assets/logos/jank.png){height=55px} ![](/assets/logos/julia.png){height=55px} ![](/assets/logos/jupyter.png){height=55px}
+:::
+:::
+
+[cppinterop.readthedocs.io](https://cppinterop.readthedocs.io) ·
+[github.com/compiler-research/CppInterOp](https://github.com/compiler-research/CppInterOp)
+
+## The API, concretely
+
+```{.cpp code-line-numbers="|1-5|7-9|11-14"}
+Cpp::Declare(R"(
+  template <typename T> struct S {
+    bool operator<(T &a) { return 0 < a; }
+  };
+)", Decls);
+
+auto Instance = Cpp::InstantiateTemplate(
+    Decls[0], {Cpp::GetType("int")}, 1);
+auto *obj = Cpp::Construct(Instance);
+
+std::vector<TCppFunction_t> ops;
+Cpp::GetOperator(Instance, Cpp::Operator::OP_Less, ops);
+Cpp::JitCall call = Cpp::MakeFunctionCallable(ops[0]);
+call.Invoke(&result, {args, /*arg_count=*/1}, obj);
+```
+
+Same five ideas as our C header — declare, instantiate, construct, look up,
+invoke — with overloads, operators and calling conventions handled properly.
+
+## CppJIT
+
+The successor to **cppyy**, rebuilt on CppInterOp and clang-repl.
+
+- Give it a header or a declaration; it gives you Python objects. **No
+  interface files, no code generation, no build step.**
+- Bindings are created *lazily*, on attribute access — you only pay for what
+  you touch.
+- The CPython runtime: proxies for scopes, methods, overloads,
+  data members, enums; converters and executors for the calling convention;
+  GIL management; a memory regulator keeping Python and C++ lifetimes in sync.
+
+. . .
+
+```python
+import cppjit
+cppjit.include("mylib.h")
+cppjit.load_library("mylib")
+cppjit.gbl.MyClass(42).do_something()
+```
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 5 — one interpreter, two languages
+
+`python-demo.ipynb`
+:::
+
+
+## Cross-language inheritance { .smaller }
+
+The hard one, and the one that makes C++ frameworks usable from Python.
+
+::: {.columns}
+::: {.column width="47%"}
+Defined in a C++ cell:
+
+```cpp
+class MyClass {
+public:
+  virtual int add_int(int i)
+    { return m_data + i; }
+  int m_data;
+};
+
+int callback(MyClass *m, int i)
+  { return m->add_int(i); }
+```
+:::
+::: {.column width="53%"}
+Subclassed in Python:
+
+```python
+class PyMyClass(cppjit.gbl.MyClass):
+    def add_int(self, i):        # override
+        return self.m_data + 2 * i
+
+cppjit.gbl.callback(MyClass(0), 2)   # 2
+cppjit.gbl.callback(PyMyClass(1), 2) # 5
+```
+:::
+:::
+
+The same C++ `callback`, taking the same `MyClass*` — dispatching into Python.
+
+- CppJIT synthesises a C++ **dispatcher** subclass whose virtuals call back
+  into the Python object.
+- The C++ side only ever sees a `MyClass*`. Virtual dispatch does the rest.
+- This is what lets you subclass a framework's abstract interface in Python.
+
+
+## Templates, callbacks, exceptions {.smaller}
+
+- **Templates on demand** — `gbl.apply["double"]` instantiates
+  `apply<double>` at that moment. Not a lookup in a table of pre-generated
+  types.
+- **Python callables as `std::function`** — a Python lambda is wrapped so C++ can
+  call it through the normal `std::function` interface.
+- **Exceptions translate** — a `std::runtime_error` thrown in C++ arrives in
+  Python as `cppjit.gbl.std.runtime_error`, catchable with `except`.
+
+. . .
+
+```cpp
+template <typename T>
+T apply(std::function<T(T)> fn, T v) {
+    if (v == 0)
+        throw std::runtime_error("Zero value not allowed");
+    return fn(v);
+}
+```
+
+\
+
+```python
+gbl.apply["double"](lambda x: x * 2, 21)          # -> 42.0
+try:
+    gbl.apply["double"](lambda x: x * 2, 0)
+except gbl.std.runtime_error as e:                # C++ exception, Python except
+    print("Caught C++ exception in Python")
+```
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 6 — templates, callbacks, exceptions
+
+`cppjit-templates-demo.ipynb`
+:::
+
+::: {.notes}
+Four cells, fast. The exception one is the crowd-pleaser — point out that the
+Python exception type *is* the C++ type, resolved through the same reflection
+machinery as everything else.
+:::
+
+## CUDA, in a notebook cell ![](/assets/logos/cuda.png){height=64px}
+
+Clang already compiles CUDA. Clang-REPL therefore compiles CUDA **incrementally**.
+
+::: {.columns}
+::: {.column width="52%"}
+```{mermaid}
+flowchart TB
+  S["__global__ kernel in a cell"] --> CR[Clang-REPL]
+  CR --> H[host IR] --> X[ORC JIT / x86]
+  X --> CPU[CPU]
+  CR --> D[device IR] --> PTX[NVPTX / PTX]
+  PTX --> GPU[GPU]
+```
+:::
+::: {.column width="48%"}
+- One extra flag: `--cuda`.
+- Device code goes down the NVPTX path, gets packed into a fatbin, and is
+  registered with the CUDA runtime — per PTU.
+- Kernels are then reachable from Python:
+  `gbl.scaleKernel[1, 256](d, n, 2.0)` is `<<<1, 256>>>`.
+:::
+:::
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 7 — Launching CUDA kernel from Python
+
+`cppjit-cuda-demo.ipynb`
+:::
+
+::: {.notes}
+The layering is the point: Python subclass → overrides a C++ virtual → the
+override calls cudaMalloc/cudaMemcpy through cppjit → launches a kernel that
+was JIT-compiled from a notebook cell → calls back into the C++ base with
+super(). Four language boundaries, one process.
+:::
+
+## Existing CUDA libraries: Thrust
+
+No precompiled library, no C/C++ helper functions — Thrust's own template API,
+called straight from Python.
+
+```python
+data = gbl.thrust.device_vector["double"](100000)
+gbl.thrust.sequence(gbl.thrust.device, data.begin(), data.end())
+
+total = gbl.thrust.reduce(gbl.thrust.device, data.begin(), data.end(), 0.0)
+
+square = gbl.thrust.square["double"]()
+sum_sq = gbl.thrust.transform_reduce(
+    gbl.thrust.device, data.begin(), data.end(), square, 0.0, gbl.thrust.plus["double"]())
+```
+
+::: {.incremental}
+- `device_vector`, `sequence`, `reduce`, `transform_reduce` — Thrust's actual
+  template functions, instantiated and called from Python, on data that never
+  leaves the GPU.
+- `thrust::square` / `thrust::plus` stand in for a custom device functor — a
+  Python lambda could never be one; there is no way to run Python bytecode on
+  the GPU.
+:::
+
+<!-- 
+## Where the boundary was
+
+::: {.callout-note}
+## This slide used to end with "and an open problem"
+
+Until a week ago, Thrust's device algorithms only worked from a
+**precompiled** `.so`. Written in a cell, they failed:
+
+```
+parallel_for failed: cudaErrorSymbolNotFound: named symbol not found
+```
+:::
+
+. . .
+
+They work now. Ahead-of-time `clang` had always compiled them correctly, so
+whatever was wrong was wrong about **incremental** compilation specifically.
+That turned out to be three separate bugs.
+
+::: {.notes}
+Do not rush this. The previous version of this talk stopped at "here is a
+limitation, someone should fix it". Walking the audience through the actual
+diagnosis is worth more, and it is the part of the talk closest to what they
+do all day. Say up front that AOT clang was correct — that is what makes it a
+tractable bug hunt rather than a mystery.
+:::
+
+## Three bugs in incremental kernel registration { .smaller }
+
+::: {.incremental}
+- **The stub was in the wrong PTU.** A kernel's host stub is registered with
+  the CUDA runtime against the fatbinary of the module it is emitted into.
+  Discardable stubs — `static` kernels, and every CUB template — were emitted
+  lazily, in whichever *later* PTU first referred to them. That PTU's
+  fatbinary holds no device code.
+- **The registration ran too late.** `CodeGenModule::Release` adds the CUDA
+  module constructor after `EmitCXXGlobalInitFunc`, at the same priority, so
+  it ran second. In a REPL a top-level statement *is* a global initializer —
+  so the launch ran before the registration that would have made it work.
+- **`clang-repl --cuda` was broken outright.** The device instance never
+  rotated the module CodeGen released during `ExecuteAction`, so the first
+  input emitted its module flags twice and the verifier rejected it.
+:::
+
+. . .
+
+The third bug hid the other two. `lit` gates the whole `Interpreter/CUDA`
+directory behind a probe that runs `clang-repl --cuda` — so when that aborts,
+eight tests report **Unsupported**, and nothing goes red.
+
+::: {.notes}
+The last line is the one for this audience: a feature detection that turns a
+hard failure into a silent skip will hide a bug for as long as you let it.
+Six patches went upstream: two Sema/CodeGen linkage-and-ordering fixes, the
+device module rotation, and three that came before them. Each one has a test;
+the two that need a GPU sit in Interpreter/CUDA, the rest run anywhere.
+::: 
+-->
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 8 — Thrust on the GPU, from Python
+
+`thrust-demo.ipynb`
+:::
+
+## Putting it together
+
+An image pipeline, built up one cell at a time:
+
+1. Load a solar EUV image with PIL, into a NumPy array.
+2. Write a **CPU** Sobel edge detector in C++, in a cell. Call it from Python
+   on the NumPy buffer.
+3. Write a **CUDA** tiled blur kernel — shared memory, `__constant__` kernel
+   weights — in a cell. Call it from Python.
+4. Render each stage inline, from C++, via the xeus display protocol.
+
+. . .
+
+Prototype in Python, compute in C++ and CUDA, iterate without ever restarting
+the process.
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 9 — exploratory programming, end to end
+
+`solar.ipynb`
+:::
+
+::: {.notes}
+This is the emotional centre of the talk — the images make it concrete. Do not
+rush. Let them see the edge-detected sun appear, then the blurred one.
+:::
+
+## Numba: skipping the interpreter entirely
+
+Calling C++ from Python still costs a Python call. Inside `@numba.njit`, it
+does not have to.
+
+```{.python code-line-numbers="|1-3|5-10"}
+import cppjit.numba_ext          # registers the C++ <-> Numba bridge
+import numba
+
+@numba.njit                       # nopython=True
+def sum_add3(x):
+    total = 0.0
+    for row in x:
+        total += cppjit.gbl.add3(row[0], row[1], row[2])
+    return total
+```
+
+- No boxing, no `PyObject`, **no GIL** — `requires_gil = False`.
+- The C++ call lowers to a direct call through the JIT'd function pointer.
+
+## How the Numba bridge works
+
+```{mermaid}
+%%| fig-width: 10
+flowchart LR
+  A["cppjit.gbl.add3"] -->|typeof_impl| B[CppFunctionNumbaType]
+  B -->|get_call_type| C["reflection<br/>+ overload match"]
+  C --> D[numba Signature]
+  D -->|lower_builtin| E["add_dynamic_addr<br/>call_function_pointer"]
+  E --> F[JIT'd C++ machine code]
+```
+
+::: {.incremental}
+- `typeof_impl` maps a CppJIT proxy to a Numba type.
+- `get_call_type` picks the C++ **overload** from the Numba argument types,
+  then asks reflection for the return type.
+- Lowering emits `ExternalFunctionPointer` at the address from
+  `cppjit.addressof(overload)`. Nothing Python-shaped survives.
+- Classes work too: field **offsets** and method addresses come from
+  reflection, so `d.fField` and `d.get_field()` compile in nopython mode.
+:::
+
+::: {.notes}
+For this audience, `get_call_type` doing overload resolution from Numba types
+is the interesting bit — the Python type lattice is being used to drive C++
+overload selection, then the C++ return type flows back to type the Numba IR.
+:::
+
+## {.center}
+
+::: {.callout-tip appearance="simple"}
+## Demo 10 — C++ inside `nopython` Numba
+
+`numba-demo.ipynb`
+:::
+
+::: {.notes}
+Measured ~50x over the same calls made from the interpreter on this machine.
+Quote the number you actually get on the day, not this one.
+:::
+
+## And it runs in a browser
+
+::: {.incremental}
+- The whole stack builds for `emscripten-wasm32`: LLVM, CppInterOp, CppJIT,
+  xeus-cpp.
+- **xeus-cpp-lite** + JupyterLite: a C++ interpreter, in a tab, with no server
+  and nothing installed.
+- Same Clang. Same reflection. Same on-demand template instantiation. The JIT
+  targets WebAssembly instead of x86.
+:::
+
+. . .
+
+Teaching, documentation, reproducible papers, and "try it now" links — without
+asking anyone to install a C++ toolchain.
+
+::: {.center}
+![](/assets/logos/wasm-qr.png){height=128px} ![](/assets/logos/jupyterlite.png){height=128px}
+:::
+
+## The ecosystem
+
+::: {.columns}
+::: {.column width="50%"}
+- **xeus-cpp** — the Jupyter kernel used for every notebook today.
+- **CppJIT** — Automatic Python bindings.
+- **jank** — A Clojure dialect on LLVM, with first-class C++ interop.
+:::
+::: {.column width="50%"}
+- **CppInterOp.jl** — The same API from Julia.
+- **ROOT** — CERN's analysis framework; exabytes of physics data, driven by an
+  interactive C++ interpreter.
+:::
+:::
+
+. . .
+
+The interpreter is not a toy. It has been in production at CERN for two
+decades, first as CINT, then Cling, and now upstream in LLVM as
+`clang-repl`.
+
+<!-- 
+## Compiler as a Service, in one picture
+
+```{mermaid}
+%%| fig-width: 11
+flowchart LR
+  subgraph Static["Static compiler"]
+    D[develop]
+  end
+  subgraph CaaS["Compiler as a Service"]
+    AOT[ahead of time] --> JIT[just in time] --> CO[continuous optimisation]
+  end
+  D --> AOT
+  CO -.->|profile, respecialise| AOT
+```
+
+::: {.incremental}
+- A static compiler optimises for an *abstract* machine and an *abstract* user.
+- A live compiler knows the **actual** machine, the **actual** types, and the
+  **actual** data — and can keep deciding, later.
+- Language interoperability is just the first thing that falls out.
+:::
+
+::: {.notes}
+Land the closing idea: interop was the application, but the underlying shift is
+moving compilation decisions later in time, where there is more information.
+:::
+-->
+
+
+## Takeaways { .smaller }
+
+1. **Templates are open-ended.** No ahead-of-time tool — SWIG, pybind11,
+   ctypes — can enumerate an unbounded set of instantiations.
+2. **Keep the compiler alive instead.** A `clang::Interpreter` makes C++
+   queryable at runtime: look up, instantiate, construct, call.
+3. **Few C functions are enough** — demonstrated end to end, with no
+   template argument ever written in the driving program.
+4. **CppInterOp and CppJIT productionise the same idea**, with zero
+   interface files and zero code generation.
+5. **The same reflection machinery scales out for free** — cross-language
+   inheritance, CUDA, Thrust, Numba, and an unmodified WebAssembly build.
+
+. . .
+
+This is not a research toy. The same interpreter has run physics analysis at
+CERN for two decades.
+
+## Get involved
+
+::: {.nonincremental}
+::: {.columns}
+::: {.column width="55%"}
+- [compiler-research.org](https://compiler-research.org)
+- [github.com/compiler-research/CppInterOp](https://github.com/compiler-research/CppInterOp)
+- [github.com/compiler-research/CppJIT](https://github.com/compiler-research/CppJIT)
+- [github.com/compiler-research/xeus-cpp](https://github.com/compiler-research/xeus-cpp)
+- [cppinterop.readthedocs.io](https://cppinterop.readthedocs.io)
+:::
+::: {.column width="45%"}
+Please get involved in our project, if it interests you.
+
+Open projects are listed on the site.
+
+Star the project in GitHub to show that you use our project.
+:::
+:::
+:::
+
+# Thank you {.center}
+
+**Vipul Cariappa** · FPLaunchpad, IIT Madras
+
+Work by the Compiler-Research group, Princeton University & CERN
+
+*Questions?*
