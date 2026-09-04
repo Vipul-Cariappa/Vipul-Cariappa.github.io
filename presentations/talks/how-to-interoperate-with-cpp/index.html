@@ -264,6 +264,14 @@ Vipul Cariappa
 <li class="fragment"><strong>Production system; CppJIT:</strong> Automatic Python bindings, no manual wrappers, no interface files.</li>
 <li class="fragment"><strong>Demos:</strong> CUDA, Numba, &amp; the browser.</li>
 </ul>
+<div class="fragment">
+<div class="columns">
+<div class="column">
+<p>Slides: <a href="https://vipulcariappa.xyz/presentations/talks/how-to-interoperate-with-cpp/">vipulcariappa.xyz/presentations/</a></p>
+</div><div class="column">
+<p><a href="https://vipulcariappa.xyz/presentations/talks/how-to-interoperate-with-cpp/"><img data-src="../../../assets/logos/slides-qr.png" height="128"></a></p>
+</div></div>
+</div>
 </section>
 <section class="title-slide slide level1 center">
 <h1>Motivation</h1>
@@ -1138,7 +1146,7 @@ the two that need a GPU sit in Interpreter/CUDA, the rest run anywhere.
       }</style></aside>
 </section>
 <section class="slide level2">
-<h2>Numba: skipping the interpreter entirely</h2>
+<h2>Numba: skipping the interpreter entirely <img data-src="../../../assets/logos/numba.png" height="64"></h2>
 <p>Calling C++ from Python still costs a Python call. Inside <code>@numba.njit</code>, it does not have to.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-line-numbers="|1-3|5-10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a aria-label="1"></a><span class="im">import</span> cppjit.numba_ext          <span class="co"># registers the C++ &lt;-&gt; Numba bridge</span></span>
 <span id="cb24-2"><a aria-label="2"></a><span class="im">import</span> numba</span>
@@ -1231,9 +1239,14 @@ the two that need a GPU sit in Interpreter/CUDA, the rest run anywhere.
 </ul>
 <div class="fragment">
 <p>Teaching, documentation, reproducible papers, and “try it now” links — without asking anyone to install a C++ toolchain.</p>
+<div class="columns">
+<div class="column">
 <div class="center">
-<p><img data-src="../../../assets/logos/wasm-qr.png" height="128"> <img data-src="../../../assets/logos/jupyterlite.png" height="128"></p>
+<p><a href="https://dev.vipulcariappa.xyz/lab/index.html?path=cppjit-demo.ipynb"><img data-src="../../../assets/logos/wasm-qr.png" height="120"></a> <img data-src="../../../assets/logos/jupyterlite.png" height="120"></p>
 </div>
+</div><div class="column">
+<p>Try it live: <a href="https://dev.vipulcariappa.xyz/lab/index.html?path=cppjit-demo.ipynb">dev.vipulcariappa.xyz</a></p>
+</div></div>
 </div>
 </section>
 <section class="slide level2">
@@ -1296,15 +1309,15 @@ moving compilation decisions later in time, where there is more information.
 -->
 </div>
 </section>
-<section class="slide level2 smaller">
+<section class="slide level2">
 <h2>Takeaways</h2>
-<ol type="1">
+<ul>
 <li class="fragment"><strong>Templates are open-ended.</strong> No ahead-of-time tool — SWIG, pybind11, ctypes — can enumerate an unbounded set of instantiations.</li>
 <li class="fragment"><strong>Keep the compiler alive instead.</strong> A <code>clang::Interpreter</code> makes C++ queryable at runtime: look up, instantiate, construct, call.</li>
 <li class="fragment"><strong>Few C functions are enough</strong> — demonstrated end to end, with no template argument ever written in the driving program.</li>
-<li class="fragment"><strong>CppInterOp and CppJIT productionise the same idea</strong>, with zero interface files and zero code generation.</li>
-<li class="fragment"><strong>The same reflection machinery scales out for free</strong> — cross-language inheritance, CUDA, Thrust, Numba, and an unmodified WebAssembly build.</li>
-</ol>
+<li class="fragment"><strong>CppInterOp and CppJIT productionise the same idea</strong>, with zero interface files and zero code generation. <!-- 5. **The same reflection machinery scales out for free** — cross-language
+ inheritance, CUDA, Thrust, Numba, and an unmodified WebAssembly build. --></li>
+</ul>
 <div class="fragment">
 <p>This is not a research toy. The same interpreter has run physics analysis at CERN for two decades.</p>
 </div>
@@ -1316,7 +1329,7 @@ moving compilation decisions later in time, where there is more information.
 <ul>
 <li><a href="https://compiler-research.org">compiler-research.org</a></li>
 <li><a href="https://github.com/compiler-research/CppInterOp">github.com/compiler-research/CppInterOp</a></li>
-<li><a href="https://github.com/compiler-research/CppJIT">github.com/compiler-research/CppJIT</a></li>
+<li><a href="https://github.com/compiler-research/cppjit">github.com/compiler-research/cppjit</a></li>
 <li><a href="https://github.com/compiler-research/xeus-cpp">github.com/compiler-research/xeus-cpp</a></li>
 <li><a href="https://cppinterop.readthedocs.io">cppinterop.readthedocs.io</a></li>
 </ul>
