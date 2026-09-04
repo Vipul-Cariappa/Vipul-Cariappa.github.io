@@ -40,8 +40,27 @@ title-slide-attributes:
 
 - **Problem/Motivation:** Why do we want to interoperate with C/C++? Why is this difficult?
 - **Build minimal interop for Python:** Use Clang to build a working C++ introspection and execution layer. In C. Then drive it from Python.
-- **Production system; CppJIT:** Automatic Python bindings, no manual wrappers, no interface files. 
+- **Production system; CppJIT:** Automatic Python bindings, no manual wrappers, no interface files.
 - **Demos:** CUDA, Numba, & the browser.
+
+. . .
+
+::: {.columns}
+
+
+::: {.column }
+
+Slides: [vipulcariappa.xyz/presentations/](https://vipulcariappa.xyz/presentations/talks/how-to-interoperate-with-cpp/)
+
+:::
+
+::: {.column }
+
+[![](/assets/logos/slides-qr.png){height=128px}](https://vipulcariappa.xyz/presentations/talks/how-to-interoperate-with-cpp/)
+
+:::
+
+:::
 
 # Motivation
 
@@ -868,7 +887,7 @@ This is the emotional centre of the talk — the images make it concrete. Do not
 rush. Let them see the edge-detected sun appear, then the blurred one.
 :::
 
-## Numba: skipping the interpreter entirely
+## Numba: skipping the interpreter entirely ![](/assets/logos/numba.png){height=64px}
 
 Calling C++ from Python still costs a Python call. Inside `@numba.njit`, it
 does not have to.
@@ -945,8 +964,24 @@ Quote the number you actually get on the day, not this one.
 Teaching, documentation, reproducible papers, and "try it now" links — without
 asking anyone to install a C++ toolchain.
 
+::: {.columns}
+
+::: {.column}
+
 ::: {.center}
-![](/assets/logos/wasm-qr.png){height=128px} ![](/assets/logos/jupyterlite.png){height=128px}
+
+[![](/assets/logos/wasm-qr.png){height=120px}](https://dev.vipulcariappa.xyz/lab/index.html?path=cppjit-demo.ipynb) ![](/assets/logos/jupyterlite.png){height=120px}
+
+:::
+
+:::
+
+::: {.column}
+
+Try it live: [dev.vipulcariappa.xyz](https://dev.vipulcariappa.xyz/lab/index.html?path=cppjit-demo.ipynb)
+
+:::
+
 :::
 
 ## The ecosystem
@@ -1000,18 +1035,18 @@ moving compilation decisions later in time, where there is more information.
 -->
 
 
-## Takeaways { .smaller }
+## Takeaways
 
-1. **Templates are open-ended.** No ahead-of-time tool — SWIG, pybind11,
+* **Templates are open-ended.** No ahead-of-time tool — SWIG, pybind11,
    ctypes — can enumerate an unbounded set of instantiations.
-2. **Keep the compiler alive instead.** A `clang::Interpreter` makes C++
+* **Keep the compiler alive instead.** A `clang::Interpreter` makes C++
    queryable at runtime: look up, instantiate, construct, call.
-3. **Few C functions are enough** — demonstrated end to end, with no
+* **Few C functions are enough** — demonstrated end to end, with no
    template argument ever written in the driving program.
-4. **CppInterOp and CppJIT productionise the same idea**, with zero
+* **CppInterOp and CppJIT productionise the same idea**, with zero
    interface files and zero code generation.
-5. **The same reflection machinery scales out for free** — cross-language
-   inheritance, CUDA, Thrust, Numba, and an unmodified WebAssembly build.
+<!-- 5. **The same reflection machinery scales out for free** — cross-language
+   inheritance, CUDA, Thrust, Numba, and an unmodified WebAssembly build. -->
 
 . . .
 
@@ -1025,7 +1060,7 @@ CERN for two decades.
 ::: {.column width="55%"}
 - [compiler-research.org](https://compiler-research.org)
 - [github.com/compiler-research/CppInterOp](https://github.com/compiler-research/CppInterOp)
-- [github.com/compiler-research/CppJIT](https://github.com/compiler-research/CppJIT)
+- [github.com/compiler-research/cppjit](https://github.com/compiler-research/cppjit)
 - [github.com/compiler-research/xeus-cpp](https://github.com/compiler-research/xeus-cpp)
 - [cppinterop.readthedocs.io](https://cppinterop.readthedocs.io)
 :::
